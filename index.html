@@ -1,0 +1,7617 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+>
+
+<title>Muscledle Mobile Fully Playable</title>
+
+<style>
+* {
+box-sizing: border-box;
+}
+
+body {
+margin: 0;
+padding: 20px;
+background: #121213;
+color: white;
+font-family: Arial, Helvetica, sans-serif;
+}
+
+.container {
+width: 100%;
+max-width: 1300px;
+margin: 0 auto;
+}
+
+h1 {
+margin: 0;
+text-align: center;
+font-size: 42px;
+letter-spacing: 2px;
+}
+
+.subtitle {
+margin: 8px 0 24px;
+color: #cccccc;
+text-align: center;
+}
+
+.controls {
+display: grid;
+grid-template-columns: minmax(250px, 1fr) auto auto;
+gap: 10px;
+}
+
+.search-container {
+position: relative;
+}
+
+#guessInput {
+width: 100%;
+height: 48px;
+padding: 0 14px;
+border: 2px solid #555555;
+border-radius: 8px;
+background: white;
+color: black;
+font-size: 17px;
+}
+
+#guessInput:focus {
+border-color: #3976c6;
+outline: none;
+}
+
+#guessInput:disabled {
+opacity: 0.6;
+cursor: not-allowed;
+}
+
+button {
+min-height: 48px;
+padding: 0 20px;
+border: none;
+border-radius: 8px;
+background: #3976c6;
+color: white;
+font-size: 16px;
+font-weight: bold;
+cursor: pointer;
+}
+
+button:hover {
+filter: brightness(1.15);
+}
+
+button:disabled {
+opacity: 0.5;
+cursor: not-allowed;
+}
+
+#newGameButton {
+background: #626269;
+}
+
+#suggestions {
+position: absolute;
+z-index: 1000;
+top: calc(100% + 4px);
+right: 0;
+left: 0;
+max-height: min(320px, 45vh);
+overflow-x: hidden;
+overflow-y: auto;
+-webkit-overflow-scrolling: touch;
+overscroll-behavior: contain;
+border: 1px solid #555555;
+border-radius: 8px;
+background: #242428;
+box-shadow: 0 10px 28px rgba(0, 0, 0, 0.7);
+touch-action: pan-y;
+}
+
+#suggestions:empty {
+display: none;
+}
+
+.suggestion {
+display: block;
+position: relative;
+z-index: 1001;
+touch-action: manipulation;
+-webkit-tap-highlight-color: rgba(255, 255, 255, 0.12);
+width: 100%;
+min-height: 42px;
+padding: 10px 14px;
+border: none;
+border-bottom: 1px solid #444444;
+border-radius: 0;
+background: #242428;
+text-align: left;
+font-size: 15px;
+font-weight: normal;
+}
+
+.suggestion:hover,
+.suggestion:focus,
+.suggestion.active-suggestion {
+background: #3b3b40;
+outline: 2px solid #6aa8ff;
+outline-offset: -2px;
+}
+
+.status-bar {
+display: flex;
+justify-content: space-between;
+gap: 15px;
+margin: 18px 0;
+padding: 14px 16px;
+border: 1px solid #444444;
+border-radius: 8px;
+background: #1d1d20;
+}
+
+.legend {
+display: flex;
+justify-content: center;
+flex-wrap: wrap;
+gap: 8px;
+margin-bottom: 16px;
+}
+
+.legend-item {
+padding: 7px 12px;
+border-radius: 6px;
+font-size: 14px;
+font-weight: bold;
+}
+
+.green {
+background: #538d4e;
+}
+
+.yellow {
+background: #b59f3b;
+}
+
+.gray {
+background: #3a3a3c;
+}
+
+
+
+.answer-row td {
+background: #538d4e;
+border-top: 4px solid #ffffff;
+}
+
+.answer-label {
+display: block;
+margin-bottom: 5px;
+color: #ffffff;
+font-size: 11px;
+font-weight: bold;
+letter-spacing: 1px;
+text-transform: uppercase;
+}
+
+.correct-guess-row td {
+border-top: 4px solid #ffffff;
+}
+
+
+.cell-main {
+display: block;
+font-weight: bold;
+}
+
+.cell-hint {
+display: block;
+margin-top: 5px;
+font-size: 12px;
+font-weight: normal;
+line-height: 1.25;
+opacity: 0.95;
+}
+
+.root-arrow {
+    display: inline-flex;
+    min-width: 27px;
+    justify-content: center;
+    border: 2px solid rgba(255,255,255,.9);
+    border-radius: 999px;
+    background: rgba(0,0,0,.25);
+display: inline-block;
+margin-left: 5px;
+font-size: 17px;
+font-weight: bold;
+}
+
+.match-percent {
+display: block;
+margin-top: 4px;
+font-size: 12px;
+opacity: 0.95;
+}
+
+.neutral {
+background: #3a3a3c;
+}
+
+#message {
+min-height: 32px;
+margin: 14px 0;
+text-align: center;
+font-size: 20px;
+font-weight: bold;
+}
+
+.table-container {
+overflow-x: auto;
+border: 1px solid #444444;
+border-radius: 8px;
+}
+
+table {
+width: 100%;
+min-width: 1050px;
+border-collapse: collapse;
+background: #1d1d20;
+}
+
+th,
+td {
+padding: 11px 9px;
+border-right: 1px solid #444444;
+border-bottom: 1px solid #444444;
+text-align: center;
+font-size: 14px;
+line-height: 1.35;
+}
+
+th {
+background: #29292d;
+}
+
+th:last-child,
+td:last-child {
+border-right: none;
+}
+
+tbody tr:last-child td {
+border-bottom: none;
+}
+
+.instructions {
+margin-top: 20px;
+padding: 16px;
+border: 1px solid #444444;
+border-radius: 8px;
+background: #1d1d20;
+color: #cccccc;
+line-height: 1.6;
+}
+
+.instructions strong {
+color: white;
+}
+
+
+
+.mode-bar {
+display: flex;
+justify-content: center;
+align-items: flex-end;
+flex-wrap: wrap;
+gap: 12px;
+margin-bottom: 16px;
+padding: 14px;
+border: 1px solid #444444;
+border-radius: 8px;
+background: #1d1d20;
+}
+
+.mode-control {
+display: flex;
+flex-direction: column;
+gap: 5px;
+}
+
+.mode-control label {
+font-size: 13px;
+font-weight: bold;
+color: #dddddd;
+}
+
+.mode-control select {
+min-width: 180px;
+min-height: 44px;
+padding: 0 10px;
+border: 1px solid #666666;
+border-radius: 6px;
+background: #ffffff;
+color: #111111;
+font-size: 15px;
+}
+
+
+
+.study-panel {
+margin-top: 20px;
+padding: 20px;
+border: 1px solid #555555;
+border-radius: 10px;
+background: #1d1d20;
+}
+
+.study-header {
+display: flex;
+justify-content: space-between;
+align-items: flex-start;
+gap: 16px;
+margin-bottom: 18px;
+}
+
+.study-header h2 {
+margin: 3px 0 0;
+font-size: 28px;
+}
+
+.study-eyebrow {
+margin: 0;
+color: #e5c85d;
+font-size: 12px;
+font-weight: bold;
+letter-spacing: 1.2px;
+text-transform: uppercase;
+}
+
+.study-summary {
+display: grid;
+grid-template-columns:
+repeat(3, minmax(150px, 1fr));
+gap: 10px;
+margin-bottom: 16px;
+}
+
+.study-badge {
+display: flex;
+flex-direction: column;
+gap: 5px;
+padding: 13px;
+border: 1px solid #444444;
+border-radius: 8px;
+background: #29292d;
+}
+
+.study-badge span {
+color: #bbbbbb;
+font-size: 12px;
+text-transform: uppercase;
+}
+
+.study-badge strong {
+font-size: 16px;
+}
+
+.study-grid {
+display: grid;
+grid-template-columns:
+repeat(2, minmax(250px, 1fr));
+gap: 12px;
+}
+
+.study-section {
+padding: 15px;
+border: 1px solid #444444;
+border-radius: 8px;
+background: #252529;
+}
+
+.study-section h3 {
+margin: 0 0 10px;
+color: #e5c85d;
+font-size: 17px;
+}
+
+.study-section p {
+margin: 0;
+line-height: 1.55;
+}
+
+.study-section ul {
+margin: 0;
+padding-left: 21px;
+line-height: 1.55;
+}
+
+.study-secondary {
+margin-top: 10px !important;
+color: #cccccc;
+}
+
+.study-note {
+margin-top: 14px;
+padding: 14px;
+border-left: 4px solid #3976c6;
+border-radius: 5px;
+background: #252529;
+line-height: 1.5;
+}
+
+.stats-panel {
+margin-top: 20px;
+padding: 18px;
+border: 1px solid #555555;
+border-radius: 10px;
+background: #1d1d20;
+}
+
+.hidden {
+display: none;
+}
+
+.stats-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 14px;
+}
+
+.stats-header h2 {
+margin: 0;
+}
+
+.stats-grid {
+display: grid;
+grid-template-columns:
+repeat(5, minmax(100px, 1fr));
+gap: 10px;
+margin: 18px 0;
+}
+
+.stat-box {
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 5px;
+padding: 15px 10px;
+border: 1px solid #444444;
+border-radius: 8px;
+background: #29292d;
+text-align: center;
+}
+
+.stat-box strong {
+font-size: 28px;
+}
+
+.stat-box span {
+color: #cccccc;
+font-size: 13px;
+}
+
+.distribution-row {
+display: grid;
+grid-template-columns: 30px 1fr 45px;
+align-items: center;
+gap: 8px;
+margin: 8px 0;
+}
+
+.distribution-label {
+font-weight: bold;
+text-align: center;
+}
+
+.distribution-track {
+height: 26px;
+overflow: hidden;
+border-radius: 5px;
+background: #3a3a3c;
+}
+
+.distribution-bar {
+min-width: 0;
+height: 100%;
+background: #538d4e;
+transition: width 0.25s ease;
+}
+
+.distribution-count {
+text-align: right;
+}
+
+.daily-stats-message {
+min-height: 22px;
+color: #e5c85d;
+font-weight: bold;
+}
+
+.secondary-button {
+background: #626269;
+}
+
+.danger-button {
+margin-top: 15px;
+background: #a53c3c;
+}
+
+
+
+#shareButton {
+    background: #538d4e;
+}
+
+#shareButton.share-ready {
+    box-shadow: 0 0 0 3px rgba(83, 141, 78, 0.35);
+}
+
+.share-feedback {
+    min-height: 24px;
+    margin: 10px 0 0;
+    color: #9fdb98;
+    text-align: center;
+    font-weight: bold;
+}
+
+.compass-cell {
+    min-width: 190px;
+    border-left: 3px solid rgba(255,255,255,0.65);
+}
+.compass-cell .cell-main { font-size: 14px; }
+.compass-cell .cell-hint { font-size: 11px; }
+
+
+.mobile-picker {
+  display: none;
+}
+
+@media screen and (max-width: 900px), screen and (pointer: coarse) {
+  .mobile-picker:not(.hidden) {
+    position: fixed;
+    z-index: 2147483647;
+    inset: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: max(10px, env(safe-area-inset-top)) 10px max(10px, env(safe-area-inset-bottom));
+    background: rgba(0, 0, 0, 0.82);
+    overflow: hidden;
+  }
+
+  .mobile-picker-panel {
+    width: 100%;
+    max-width: 620px;
+    max-height: min(72dvh, 560px);
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #666666;
+    border-radius: 12px;
+    background: #1d1d20;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.85);
+    overflow: hidden;
+  }
+
+  .mobile-picker-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px;
+    background: #29292d;
+    border-bottom: 1px solid #555555;
+  }
+
+  .mobile-picker-header strong {
+    font-size: 18px;
+  }
+
+  .mobile-picker-header button {
+    min-height: 44px;
+    padding: 0 16px;
+  }
+
+  .mobile-picker-query {
+    padding: 10px 14px;
+    color: #e5c85d;
+    font-size: 14px;
+    font-weight: bold;
+    border-bottom: 1px solid #444444;
+  }
+
+  .mobile-picker-list {
+    min-height: 80px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    background: #242428;
+  }
+
+  .mobile-picker-option {
+    display: block;
+    width: 100%;
+    min-height: 54px;
+    padding: 14px 16px;
+    border: 0;
+    border-bottom: 1px solid #444444;
+    border-radius: 0;
+    background: #242428;
+    color: #ffffff;
+    text-align: left;
+    font-size: 17px;
+    font-weight: 600;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(255,255,255,0.15);
+  }
+
+  .mobile-picker-option:active,
+  .mobile-picker-option:focus {
+    background: #3976c6;
+    outline: none;
+  }
+
+  .mobile-picker-empty {
+    padding: 22px 16px;
+    color: #cccccc;
+    text-align: center;
+  }
+
+  /* The desktop dropdown is intentionally disabled on phones. */
+  #suggestions {
+    display: none !important;
+  }
+}
+@media screen and (max-width: 900px), screen and (pointer: coarse) {
+.mode-bar {
+align-items: stretch;
+}
+
+.mode-control {
+width: 100%;
+}
+
+.mode-control select {
+width: 100%;
+}
+
+.stats-grid {
+grid-template-columns:
+repeat(2, minmax(100px, 1fr));
+}
+
+.study-header {
+flex-direction: column;
+}
+
+.study-summary {
+grid-template-columns: 1fr;
+}
+
+.study-grid {
+grid-template-columns: 1fr;
+}
+
+body {
+padding: 12px;
+}
+
+h1 {
+font-size: 34px;
+}
+
+.controls {
+grid-template-columns: 1fr 1fr;
+}
+
+.search-container {
+grid-column: 1 / 3;
+width: 100%;
+min-width: 0;
+z-index: 1000;
+}
+
+#guessInput {
+font-size: 16px;
+}
+
+#suggestions.mobile-suggestions {
+position: fixed;
+z-index: 2147483647;
+right: auto;
+left: 12px;
+width: calc(100vw - 24px);
+max-height: min(42vh, 320px);
+border-radius: 10px;
+}
+
+.suggestion {
+min-height: 50px;
+padding: 13px 15px;
+font-size: 16px;
+}
+
+
+.status-bar {
+flex-direction: column;
+align-items: center;
+}
+}
+
+
+
+body.mobile-picker-open {
+  overflow: hidden;
+}
+
+@media screen and (max-width: 900px), screen and (pointer: coarse) {
+  #mobilePicker.mobile-picker:not(.hidden) {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
+  #mobilePicker .mobile-picker-panel {
+    pointer-events: auto;
+  }
+
+  #mobilePickerList {
+    pointer-events: auto;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<main class="container">
+
+<h1>MUSCLEDLE</h1>
+
+<p class="subtitle">
+Guess the hidden muscle in six tries.
+</p>
+
+
+
+<div class="mode-bar">
+
+<div class="mode-control">
+
+<label for="gameMode">
+Game Mode
+</label>
+
+<select id="gameMode">
+
+<option value="random">
+Random Practice
+</option>
+
+<option value="daily">
+Daily Challenge
+</option>
+
+</select>
+
+</div>
+
+<div class="mode-control">
+
+<label for="regionFilter">
+Category
+</label>
+
+<select id="regionFilter">
+
+<option value="All">
+All Regions
+</option>
+
+<option value="Upper Limb">
+Upper Limb
+</option>
+
+<option value="Lower Limb">
+Lower Limb
+</option>
+
+<option value="Head and Neck">
+Head and Neck
+</option>
+
+<option value="Trunk">
+Thorax and Abdomen
+</option>
+
+<option value="Back">
+Back
+</option>
+
+<option value="Pelvis">
+Pelvis and Perineum
+</option>
+
+</select>
+
+</div>
+
+
+<div class="mode-control">
+
+<label for="difficultyFilter">
+Difficulty
+</label>
+
+<select id="difficultyFilter">
+
+<option value="Foundational">
+Foundational
+</option>
+
+<option value="Standard">
+Standard
+</option>
+
+<option value="Expert">
+Expert
+</option>
+
+</select>
+
+</div>
+
+<button
+id="statsButton"
+type="button"
+>
+
+Statistics
+</button>
+
+
+<button
+id="studyButton"
+type="button"
+disabled
+>
+Study Card
+</button>
+<button
+id="shareButton"
+type="button"
+class="hidden"
+disabled
+>
+Share Results
+</button>
+
+</div>
+
+<div class="controls">
+
+<div class="search-container">
+
+<input
+id="guessInput"
+type="text"
+placeholder="Start typing a muscle name..."
+autocomplete="off"
+autocapitalize="none"
+autocorrect="off"
+spellcheck="false"
+inputmode="search"
+role="combobox"
+aria-autocomplete="list"
+aria-controls="suggestions"
+aria-expanded="false"
+>
+
+<div id="suggestions" role="listbox" aria-label="Muscle suggestions"></div>
+
+</div>
+
+<button
+id="guessButton"
+type="button"
+>
+Guess
+</button>
+
+<button
+id="newGameButton"
+type="button"
+>
+New Game
+</button>
+
+</div>
+
+<div id="mobilePicker" class="mobile-picker hidden" role="dialog" aria-modal="true" aria-labelledby="mobilePickerTitle">
+  <div class="mobile-picker-panel">
+    <div class="mobile-picker-header">
+      <strong id="mobilePickerTitle">Select a muscle</strong>
+      <button id="closeMobilePicker" type="button" class="secondary-button">Close</button>
+    </div>
+    <div id="mobilePickerQuery" class="mobile-picker-query"></div>
+    <div id="mobilePickerList" class="mobile-picker-list" role="listbox" aria-label="Matching muscles"></div>
+  </div>
+</div>
+
+<div class="status-bar">
+
+<span id="guessCounter">
+Guesses remaining: 6
+</span>
+
+<span id="gameNumber">
+Game 1
+</span>
+
+
+<span id="modeIndicator">
+Random Practice
+</span>
+
+
+<span id="difficultyIndicator">
+Foundational
+</span>
+
+</div>
+
+<div class="legend">
+
+<span class="legend-item green">
+Exact match
+</span>
+
+<span class="legend-item yellow">
+Related or overlapping
+</span>
+
+<span class="legend-item gray">
+No match
+</span>
+
+</div>
+
+<div id="message"></div>
+<div id="shareFeedback" class="share-feedback" aria-live="polite"></div>
+
+<div class="table-container">
+
+<table>
+
+<thead>
+
+<tr>
+<th>Muscle</th>
+<th>Region</th>
+<th>Specific Location / Group</th>
+<th>Actions</th>
+<th>Innervation</th>
+<th>Roots</th>
+<th>Origin</th>
+<th>Insertion</th>
+<th>Anatomical Compass</th>
+</tr>
+
+</thead>
+
+<tbody id="results"></tbody>
+
+</table>
+
+</div>
+
+
+
+<section
+id="studyPanel"
+class="study-panel hidden"
+aria-live="polite"
+>
+
+<div class="study-header">
+
+<div>
+
+<p class="study-eyebrow">
+Target Review
+</p>
+
+<h2 id="studyMuscleName">
+Muscle Study Card
+</h2>
+
+</div>
+
+<button
+id="closeStudyButton"
+type="button"
+class="secondary-button"
+>
+Close
+</button>
+
+</div>
+
+<div class="study-summary">
+
+<div class="study-badge">
+
+<span>
+Region
+</span>
+
+<strong id="studyRegion">
+Not available
+</strong>
+
+</div>
+
+<div class="study-badge">
+
+<span>
+Compartment
+</span>
+
+<strong id="studyCompartment">
+Not available
+</strong>
+
+</div>
+
+<div class="study-badge">
+
+<span>
+Difficulty
+</span>
+
+<strong id="studyDifficulty">
+Standard
+</strong>
+
+</div>
+
+</div>
+
+<div class="study-grid">
+
+<article class="study-section">
+
+<h3>
+Actions
+</h3>
+
+<ul id="studyActions"></ul>
+
+</article>
+
+<article class="study-section">
+
+<h3>
+Innervation
+</h3>
+
+<p id="studyInnervation"></p>
+
+<p class="study-secondary">
+Roots:
+<span id="studyRoots"></span>
+</p>
+
+</article>
+
+<article class="study-section">
+
+<h3>
+Origin
+</h3>
+
+<ul id="studyOrigin"></ul>
+
+</article>
+
+<article class="study-section">
+
+<h3>
+Insertion
+</h3>
+
+<ul id="studyInsertion"></ul>
+
+</article>
+
+<article class="study-section">
+
+<h3>
+Blood Supply
+</h3>
+
+<ul id="studyBloodSupply"></ul>
+
+</article>
+
+<article class="study-section">
+
+<h3>
+Clinical Correlation
+</h3>
+
+<p id="studyClinical"></p>
+
+</article>
+
+</div>
+
+<div class="study-note">
+
+<strong>
+Learning note:
+</strong>
+
+<span id="studyNote">
+Review how the origin and insertion produce the listed actions.
+</span>
+
+</div>
+
+</section>
+
+
+<section
+id="statsPanel"
+class="stats-panel hidden"
+>
+
+<div class="stats-header">
+
+<h2>
+Muscledle Statistics
+</h2>
+
+<button
+id="closeStatsButton"
+type="button"
+class="secondary-button"
+>
+Close
+</button>
+
+</div>
+
+<div class="stats-grid">
+
+<div class="stat-box">
+
+<strong id="gamesPlayedStat">
+0
+</strong>
+
+<span>
+Played
+</span>
+
+</div>
+
+<div class="stat-box">
+
+<strong id="gamesWonStat">
+0
+</strong>
+
+<span>
+Won
+</span>
+
+</div>
+
+<div class="stat-box">
+
+<strong id="winPercentageStat">
+0%
+</strong>
+
+<span>
+Win Rate
+</span>
+
+</div>
+
+<div class="stat-box">
+
+<strong id="currentStreakStat">
+0
+</strong>
+
+<span>
+Current Streak
+</span>
+
+</div>
+
+<div class="stat-box">
+
+<strong id="longestStreakStat">
+0
+</strong>
+
+<span>
+Best Streak
+</span>
+
+</div>
+
+</div>
+
+<h3>
+Guess Distribution
+</h3>
+
+<div id="guessDistribution"></div>
+
+<p
+id="dailyStatsMessage"
+class="daily-stats-message"
+></p>
+
+<button
+id="resetStatsButton"
+type="button"
+class="danger-button"
+>
+Reset Statistics
+</button>
+
+</section>
+
+<section class="instructions">
+
+<strong>How to play:</strong>
+
+Start typing a muscle name and select it from the suggestion
+menu. Press the Guess button or press Enter.
+
+<br><br>
+
+<strong>Green:</strong> exact match.
+
+<br>
+
+<strong>Yellow:</strong> related region, compartment, movement
+family, nerve family, root supply, or anatomical attachment.
+
+<br>
+
+<strong>Gray:</strong> no match. 
+Root arrows compare neural levels. For gameplay, cranial nerves are placed above C1 as the highest neural tier. This is a directional game convention, not an anatomical claim that cranial nerves are spinal roots. An upward arrow means the target is at a higher neural level; a downward arrow means a lower neural level; a horizontal arrow means a similar average level.
+
+<br><br>
+
+Press <strong>New Game</strong> to select a different hidden
+muscle and reset the board.
+
+</section>
+
+</main>
+
+<script>
+"use strict";
+
+const muscles = [];
+
+function addMuscle(
+name,
+region,
+compartment,
+actions,
+innervation,
+nerveFamily,
+roots,
+origin,
+insertion
+) {
+muscles.push({
+name: name,
+region: region,
+compartment: compartment,
+actions: actions,
+innervation: innervation,
+nerveFamily: nerveFamily,
+roots: roots,
+origin: origin,
+insertion: insertion
+});
+}
+
+function addMuscleGroup(
+names,
+region,
+compartment,
+actions,
+innervation,
+nerveFamily,
+roots
+) {
+names.forEach(function (name) {
+addMuscle(
+name,
+region,
+compartment,
+actions,
+innervation,
+nerveFamily,
+roots,
+[name + " origin"],
+[name + " insertion"]
+);
+});
+}
+
+/*
+==========================
+SHOULDER AND SCAPULAR AREA
+==========================
+*/
+
+addMuscle(
+"Deltoid",
+"Upper Limb",
+"Shoulder",
+[
+"Shoulder Abduction",
+"Shoulder Flexion",
+"Shoulder Extension"
+],
+"Axillary Nerve",
+"Brachial Plexus",
+["C5", "C6"],
+[
+"Lateral Clavicle",
+"Acromion",
+"Spine of Scapula"
+],
+[
+"Deltoid Tuberosity"
+]
+);
+
+addMuscle(
+"Supraspinatus",
+"Upper Limb",
+"Rotator Cuff",
+[
+"Shoulder Abduction",
+"Shoulder Stabilization"
+],
+"Suprascapular Nerve",
+"Brachial Plexus",
+["C5", "C6"],
+[
+"Supraspinous Fossa"
+],
+[
+"Superior Facet of Greater Tubercle of Humerus"
+]
+);
+
+addMuscle(
+"Infraspinatus",
+"Upper Limb",
+"Rotator Cuff",
+[
+"Shoulder External Rotation",
+"Shoulder Stabilization"
+],
+"Suprascapular Nerve",
+"Brachial Plexus",
+["C5", "C6"],
+[
+"Infraspinous Fossa"
+],
+[
+"Middle Facet of Greater Tubercle of Humerus"
+]
+);
+
+addMuscle(
+"Teres Minor",
+"Upper Limb",
+"Rotator Cuff",
+[
+"Shoulder External Rotation",
+"Shoulder Adduction"
+],
+"Axillary Nerve",
+"Brachial Plexus",
+["C5", "C6"],
+[
+"Lateral Border of Scapula"
+],
+[
+"Inferior Facet of Greater Tubercle of Humerus"
+]
+);
+
+addMuscle(
+"Subscapularis",
+"Upper Limb",
+"Rotator Cuff",
+[
+"Shoulder Internal Rotation",
+"Shoulder Adduction"
+],
+"Subscapular Nerves",
+"Brachial Plexus",
+["C5", "C6", "C7"],
+[
+"Subscapular Fossa"
+],
+[
+"Lesser Tubercle of Humerus"
+]
+);
+
+addMuscle(
+"Teres Major",
+"Upper Limb",
+"Shoulder",
+[
+"Shoulder Adduction",
+"Shoulder Internal Rotation",
+"Shoulder Extension"
+],
+"Lower Subscapular Nerve",
+"Brachial Plexus",
+["C5", "C6", "C7"],
+[
+"Inferior Angle of Scapula"
+],
+[
+"Medial Lip of Intertubercular Sulcus"
+]
+);
+
+addMuscle(
+"Trapezius",
+"Upper Limb",
+"Scapular Region",
+[
+"Scapular Elevation",
+"Scapular Retraction",
+"Scapular Depression",
+"Upward Scapular Rotation"
+],
+"Accessory Nerve",
+"Cranial and Cervical",
+["CN XI", "C3", "C4"],
+[
+"External Occipital Protuberance",
+"Medial Superior Nuchal Line",
+"Ligamentum Nuchae",
+"Spinous Processes C7-T12"
+],
+[
+"Lateral Third of Clavicle",
+"Acromion",
+"Spine of Scapula"
+]
+);
+
+addMuscle(
+"Levator Scapulae",
+"Upper Limb",
+"Scapular Region",
+[
+"Scapular Elevation",
+"Downward Scapular Rotation"
+],
+"Dorsal Scapular Nerve",
+"Brachial Plexus",
+["C3", "C4", "C5"],
+[
+"Posterior Tubercles of Transverse Processes C1-C4"
+],
+[
+"Medial Border of Scapula Superior to Spine"
+]
+);
+
+addMuscle(
+"Rhomboid Major",
+"Upper Limb",
+"Scapular Region",
+[
+"Scapular Retraction",
+"Downward Scapular Rotation",
+"Scapular Stabilization"
+],
+"Dorsal Scapular Nerve",
+"Brachial Plexus",
+["C4", "C5"],
+[
+"Spinous Processes T2-T5"
+],
+[
+"Medial Border of Scapula Inferior to Spine"
+]
+);
+
+addMuscle(
+"Rhomboid Minor",
+"Upper Limb",
+"Scapular Region",
+[
+"Scapular Retraction",
+"Downward Scapular Rotation",
+"Scapular Stabilization"
+],
+"Dorsal Scapular Nerve",
+"Brachial Plexus",
+["C4", "C5"],
+[
+"Ligamentum Nuchae",
+"Spinous Processes C7-T1"
+],
+[
+"Medial End of Spine of Scapula"
+]
+);
+
+addMuscle(
+"Serratus Anterior",
+"Upper Limb",
+"Scapular Region",
+[
+"Scapular Protraction",
+"Upward Scapular Rotation",
+"Scapular Stabilization"
+],
+"Long Thoracic Nerve",
+"Brachial Plexus",
+["C5", "C6", "C7"],
+[
+"External Surfaces of Ribs 1-8"
+],
+[
+"Anterior Surface of Medial Border of Scapula"
+]
+);
+
+addMuscle(
+"Pectoralis Minor",
+"Upper Limb",
+"Anterior Shoulder",
+[
+"Scapular Protraction",
+"Scapular Depression",
+"Scapular Stabilization"
+],
+"Medial Pectoral Nerve",
+"Brachial Plexus",
+["C8", "T1"],
+[
+"Ribs 3-5"
+],
+[
+"Coracoid Process"
+]
+);
+
+addMuscle(
+"Pectoralis Major",
+"Upper Limb",
+"Anterior Shoulder",
+[
+"Shoulder Adduction",
+"Shoulder Internal Rotation",
+"Shoulder Flexion"
+],
+"Medial and Lateral Pectoral Nerves",
+"Brachial Plexus",
+["C5", "C6", "C7", "C8", "T1"],
+[
+"Clavicle",
+"Sternum",
+"Costal Cartilages"
+],
+[
+"Lateral Lip of Intertubercular Sulcus"
+]
+);
+
+addMuscle(
+"Latissimus Dorsi",
+"Upper Limb",
+"Posterior Shoulder",
+[
+"Shoulder Extension",
+"Shoulder Adduction",
+"Shoulder Internal Rotation"
+],
+"Thoracodorsal Nerve",
+"Brachial Plexus",
+["C6", "C7", "C8"],
+[
+"Thoracolumbar Fascia",
+"Lower Thoracic Vertebrae",
+"Iliac Crest"
+],
+[
+"Floor of Intertubercular Sulcus"
+]
+);
+
+/*
+==========
+ARM
+==========
+*/
+
+addMuscle(
+"Biceps Brachii",
+"Upper Limb",
+"Anterior Arm",
+[
+"Elbow Flexion",
+"Forearm Supination"
+],
+"Musculocutaneous Nerve",
+"Brachial Plexus",
+["C5", "C6"],
+[
+"Coracoid Process",
+"Supraglenoid Tubercle"
+],
+[
+"Radial Tuberosity",
+"Bicipital Aponeurosis"
+]
+);
+
+addMuscle(
+"Brachialis",
+"Upper Limb",
+"Anterior Arm",
+[
+"Elbow Flexion"
+],
+"Musculocutaneous Nerve",
+"Brachial Plexus",
+["C5", "C6"],
+[
+"Anterior Humerus"
+],
+[
+"Ulnar Tuberosity",
+"Coronoid Process"
+]
+);
+
+addMuscle(
+"Coracobrachialis",
+"Upper Limb",
+"Anterior Arm",
+[
+"Shoulder Flexion",
+"Shoulder Adduction"
+],
+"Musculocutaneous Nerve",
+"Brachial Plexus",
+["C5", "C6", "C7"],
+[
+"Coracoid Process"
+],
+[
+"Medial Humerus"
+]
+);
+
+addMuscle(
+"Triceps Brachii",
+"Upper Limb",
+"Posterior Arm",
+[
+"Elbow Extension"
+],
+"Radial Nerve",
+"Brachial Plexus",
+["C6", "C7", "C8"],
+[
+"Infraglenoid Tubercle",
+"Posterior Humerus"
+],
+[
+"Olecranon"
+]
+);
+
+addMuscle(
+"Anconeus",
+"Upper Limb",
+"Posterior Arm",
+[
+"Elbow Extension",
+"Elbow Stabilization"
+],
+"Radial Nerve",
+"Brachial Plexus",
+["C7", "C8", "T1"],
+[
+"Lateral Epicondyle"
+],
+[
+"Olecranon",
+"Posterior Ulna"
+]
+);
+
+/*
+=================
+ANTERIOR FOREARM
+=================
+*/
+
+addMuscle(
+"Pronator Teres",
+"Upper Limb",
+"Anterior Forearm",
+[
+"Forearm Pronation",
+"Elbow Flexion"
+],
+"Median Nerve",
+"Brachial Plexus",
+["C6", "C7"],
+[
+"Medial Epicondyle of Humerus",
+"Coronoid Process of Ulna"
+],
+[
+"Middle of Lateral Surface of Radius"
+]
+);
+
+addMuscle(
+"Flexor Carpi Radialis",
+"Upper Limb",
+"Anterior Forearm",
+[
+"Wrist Flexion",
+"Wrist Abduction"
+],
+"Median Nerve",
+"Brachial Plexus",
+["C6", "C7"],
+[
+"Medial Epicondyle of Humerus"
+],
+[
+"Base of Second Metacarpal",
+"Base of Third Metacarpal"
+]
+);
+
+addMuscle(
+"Palmaris Longus",
+"Upper Limb",
+"Anterior Forearm",
+[
+"Wrist Flexion",
+"Palmar Aponeurosis Tension"
+],
+"Median Nerve",
+"Brachial Plexus",
+["C7", "C8"],
+[
+"Medial Epicondyle of Humerus"
+],
+[
+"Flexor Retinaculum",
+"Palmar Aponeurosis"
+]
+);
+
+addMuscle(
+"Flexor Digitorum Superficialis",
+"Upper Limb",
+"Anterior Forearm",
+[
+"PIP Flexion of Digits 2-5",
+"MCP Flexion of Digits 2-5",
+"Wrist Flexion"
+],
+"Median Nerve",
+"Brachial Plexus",
+["C7", "C8", "T1"],
+[
+"Medial Epicondyle of Humerus",
+"Coronoid Process of Ulna",
+"Anterior Border of Radius"
+],
+[
+"Middle Phalanges of Digits 2-5"
+]
+);
+
+addMuscle(
+"Flexor Pollicis Longus",
+"Upper Limb",
+"Anterior Forearm",
+[
+"Thumb IP Flexion",
+"Thumb MCP Flexion",
+"Wrist Flexion"
+],
+"Anterior Interosseous Nerve",
+"Brachial Plexus",
+["C8", "T1"],
+[
+"Anterior Surface of Radius",
+"Interosseous Membrane"
+],
+[
+"Base of Distal Phalanx of Thumb"
+]
+);
+
+addMuscle(
+"Pronator Quadratus",
+"Upper Limb",
+"Anterior Forearm",
+[
+"Forearm Pronation",
+"Distal Radioulnar Joint Stabilization"
+],
+"Anterior Interosseous Nerve",
+"Brachial Plexus",
+["C8", "T1"],
+[
+"Distal Fourth of Anterior Ulna"
+],
+[
+"Distal Fourth of Anterior Radius"
+]
+);
+
+addMuscle(
+"Flexor Carpi Ulnaris",
+"Upper Limb",
+"Anterior Forearm",
+[
+"Wrist Flexion",
+"Wrist Adduction"
+],
+"Ulnar Nerve",
+"Brachial Plexus",
+["C7", "C8", "T1"],
+[
+"Medial Epicondyle of Humerus",
+"Olecranon",
+"Posterior Border of Ulna"
+],
+[
+"Pisiform",
+"Hook of Hamate",
+"Base of Fifth Metacarpal"
+]
+);
+
+addMuscle(
+"Flexor Digitorum Profundus",
+"Upper Limb",
+"Anterior Forearm",
+[
+"DIP Flexion of Digits 2-5",
+"PIP Flexion of Digits 2-5",
+"MCP Flexion of Digits 2-5",
+"Wrist Flexion"
+],
+"Anterior Interosseous and Ulnar Nerves",
+"Brachial Plexus",
+["C8", "T1"],
+[
+"Proximal Three Fourths of Anterior and Medial Ulna",
+"Interosseous Membrane"
+],
+[
+"Distal Phalanges of Digits 2-5"
+]
+);
+
+/*
+=================
+POSTERIOR FOREARM
+=================
+*/
+
+addMuscle(
+"Extensor Carpi Radialis Longus",
+"Upper Limb",
+"Posterior Forearm",
+[
+"Wrist Extension",
+"Wrist Abduction"
+],
+"Radial Nerve",
+"Brachial Plexus",
+["C6", "C7"],
+[
+"Lateral Supracondylar Ridge of Humerus"
+],
+[
+"Base of Second Metacarpal"
+]
+);
+
+addMuscle(
+"Extensor Carpi Radialis Brevis",
+"Upper Limb",
+"Posterior Forearm",
+[
+"Wrist Extension",
+"Wrist Abduction"
+],
+"Deep Branch of Radial Nerve",
+"Brachial Plexus",
+["C7", "C8"],
+[
+"Lateral Epicondyle of Humerus"
+],
+[
+"Base of Third Metacarpal"
+]
+);
+
+addMuscle(
+"Extensor Digitorum",
+"Upper Limb",
+"Posterior Forearm",
+[
+"MCP Extension of Digits 2-5",
+"IP Extension of Digits 2-5",
+"Wrist Extension"
+],
+"Posterior Interosseous Nerve",
+"Brachial Plexus",
+["C7", "C8"],
+[
+"Lateral Epicondyle of Humerus"
+],
+[
+"Extensor Expansions of Digits 2-5"
+]
+);
+
+addMuscle(
+"Extensor Digiti Minimi",
+"Upper Limb",
+"Posterior Forearm",
+[
+"Little Finger MCP Extension",
+"Little Finger IP Extension",
+"Wrist Extension"
+],
+"Posterior Interosseous Nerve",
+"Brachial Plexus",
+["C7", "C8"],
+[
+"Lateral Epicondyle of Humerus"
+],
+[
+"Extensor Expansion of Digit 5"
+]
+);
+
+addMuscle(
+"Extensor Carpi Ulnaris",
+"Upper Limb",
+"Posterior Forearm",
+[
+"Wrist Extension",
+"Wrist Adduction"
+],
+"Posterior Interosseous Nerve",
+"Brachial Plexus",
+["C7", "C8"],
+[
+"Lateral Epicondyle of Humerus",
+"Posterior Border of Ulna"
+],
+[
+"Base of Fifth Metacarpal"
+]
+);
+
+addMuscle(
+"Abductor Pollicis Longus",
+"Upper Limb",
+"Posterior Forearm",
+[
+"Thumb CMC Abduction",
+"Thumb CMC Extension",
+"Wrist Abduction"
+],
+"Posterior Interosseous Nerve",
+"Brachial Plexus",
+["C7", "C8"],
+[
+"Posterior Ulna",
+"Posterior Radius",
+"Interosseous Membrane"
+],
+[
+"Base of First Metacarpal"
+]
+);
+
+addMuscle(
+"Extensor Pollicis Brevis",
+"Upper Limb",
+"Posterior Forearm",
+[
+"Thumb MCP Extension",
+"Thumb CMC Extension"
+],
+"Posterior Interosseous Nerve",
+"Brachial Plexus",
+["C7", "C8"],
+[
+"Posterior Radius",
+"Interosseous Membrane"
+],
+[
+"Base of Proximal Phalanx of Thumb"
+]
+);
+
+addMuscle(
+"Extensor Pollicis Longus",
+"Upper Limb",
+"Posterior Forearm",
+[
+"Thumb IP Extension",
+"Thumb MCP Extension",
+"Thumb CMC Extension"
+],
+"Posterior Interosseous Nerve",
+"Brachial Plexus",
+["C7", "C8"],
+[
+"Posterior Ulna",
+"Interosseous Membrane"
+],
+[
+"Base of Distal Phalanx of Thumb"
+]
+);
+
+addMuscle(
+"Extensor Indicis",
+"Upper Limb",
+"Posterior Forearm",
+[
+"Index Finger MCP Extension",
+"Index Finger IP Extension",
+"Wrist Extension"
+],
+"Posterior Interosseous Nerve",
+"Brachial Plexus",
+["C7", "C8"],
+[
+"Posterior Distal Ulna",
+"Interosseous Membrane"
+],
+[
+"Extensor Expansion of Digit 2"
+]
+);
+
+addMuscle(
+"Brachioradialis",
+"Upper Limb",
+"Posterior Forearm",
+[
+"Elbow Flexion",
+"Forearm Return to Neutral"
+],
+"Radial Nerve",
+"Brachial Plexus",
+["C5", "C6", "C7"],
+[
+"Proximal Two Thirds of Lateral Supracondylar Ridge of Humerus"
+],
+[
+"Distal Radius Proximal to Styloid Process"
+]
+);
+
+addMuscle(
+"Supinator",
+"Upper Limb",
+"Posterior Forearm",
+[
+"Forearm Supination"
+],
+"Deep Branch of Radial Nerve",
+"Brachial Plexus",
+["C6", "C7"],
+[
+"Lateral Epicondyle of Humerus",
+"Radial Collateral Ligament",
+"Annular Ligament",
+"Supinator Crest of Ulna"
+],
+[
+"Proximal Third of Radius"
+]
+);
+
+/*
+=================
+INTRINSIC HAND
+=================
+*/
+
+addMuscleGroup(
+[
+"Abductor Pollicis Brevis",
+"Flexor Pollicis Brevis",
+"Opponens Pollicis"
+],
+"Upper Limb",
+"Thenar Hand",
+[
+"Thumb Flexion",
+"Thumb Opposition",
+"Thumb Abduction"
+],
+"Median Nerve",
+"Brachial Plexus",
+["C8", "T1"]
+);
+
+addMuscle(
+"Adductor Pollicis",
+"Upper Limb",
+"Deep Hand",
+[
+"Thumb Adduction"
+],
+"Ulnar Nerve",
+"Brachial Plexus",
+["C8", "T1"],
+[
+"Third Metacarpal",
+"Capitate"
+],
+[
+"Proximal Phalanx of Thumb"
+]
+);
+
+addMuscleGroup(
+[
+"Abductor Digiti Minimi Hand",
+"Flexor Digiti Minimi Brevis Hand",
+"Opponens Digiti Minimi"
+],
+"Upper Limb",
+"Hypothenar Hand",
+[
+"Little Finger Movement"
+],
+"Ulnar Nerve",
+"Brachial Plexus",
+["C8", "T1"]
+);
+
+addMuscle(
+"Lumbricals 1-2 of Hand",
+"Upper Limb",
+"Central Hand",
+[
+"MCP Flexion",
+"IP Extension"
+],
+"Median Nerve",
+"Brachial Plexus",
+["C8", "T1"],
+[
+"Tendons of Flexor Digitorum Profundus"
+],
+[
+"Extensor Expansions of Digits 2-3"
+]
+);
+
+addMuscle(
+"Lumbricals 3-4 of Hand",
+"Upper Limb",
+"Central Hand",
+[
+"MCP Flexion",
+"IP Extension"
+],
+"Ulnar Nerve",
+"Brachial Plexus",
+["C8", "T1"],
+[
+"Tendons of Flexor Digitorum Profundus"
+],
+[
+"Extensor Expansions of Digits 4-5"
+]
+);
+
+addMuscle(
+"Palmar Interossei of Hand",
+"Upper Limb",
+"Deep Hand",
+[
+"Finger Adduction",
+"MCP Flexion",
+"IP Extension"
+],
+"Ulnar Nerve",
+"Brachial Plexus",
+["C8", "T1"],
+[
+"Metacarpals 2, 4, and 5"
+],
+[
+"Proximal Phalanges and Extensor Expansions of Digits 2, 4, and 5"
+]
+);
+
+addMuscle(
+"Dorsal Interossei of Hand",
+"Upper Limb",
+"Deep Hand",
+[
+"Finger Abduction",
+"MCP Flexion",
+"IP Extension"
+],
+"Ulnar Nerve",
+"Brachial Plexus",
+["C8", "T1"],
+[
+"Adjacent Sides of Metacarpals"
+],
+[
+"Proximal Phalanges and Extensor Expansions of Digits 2-4"
+]
+);
+
+/*
+==================
+GLUTEAL AND HIP
+==================
+*/
+
+addMuscle(
+"Gluteus Maximus",
+"Lower Limb",
+"Gluteal Region",
+[
+"Hip Extension",
+"Hip External Rotation"
+],
+"Inferior Gluteal Nerve",
+"Sacral Plexus",
+["L5", "S1", "S2"],
+[
+"Posterior Ilium",
+"Sacrum",
+"Coccyx"
+],
+[
+"Iliotibial Tract",
+"Gluteal Tuberosity"
+]
+);
+
+addMuscleGroup(
+[
+"Gluteus Medius",
+"Gluteus Minimus",
+"Tensor Fasciae Latae"
+],
+"Lower Limb",
+"Gluteal Region",
+[
+"Hip Abduction",
+"Hip Internal Rotation"
+],
+"Superior Gluteal Nerve",
+"Sacral Plexus",
+["L4", "L5", "S1"]
+);
+
+addMuscle(
+"Piriformis",
+"Lower Limb",
+"Deep Gluteal Region",
+[
+"Hip External Rotation",
+"Hip Abduction",
+"Hip Stabilization"
+],
+"Nerve to Piriformis",
+"Sacral Plexus",
+["S1", "S2"],
+[
+"Anterior Surface of Sacrum"
+],
+[
+"Greater Trochanter of Femur"
+]
+);
+
+addMuscle(
+"Obturator Internus",
+"Lower Limb",
+"Deep Gluteal Region",
+[
+"Hip External Rotation",
+"Hip Abduction",
+"Hip Stabilization"
+],
+"Nerve to Obturator Internus",
+"Sacral Plexus",
+["L5", "S1", "S2"],
+[
+"Pelvic Surface of Obturator Membrane",
+"Surrounding Pelvic Bone"
+],
+[
+"Medial Surface of Greater Trochanter"
+]
+);
+
+addMuscle(
+"Gemelli",
+"Lower Limb",
+"Deep Gluteal Region",
+[
+"Hip External Rotation",
+"Hip Abduction",
+"Hip Stabilization"
+],
+"Nerves to Obturator Internus and Quadratus Femoris",
+"Sacral Plexus",
+["L4", "L5", "S1", "S2"],
+[
+"Ischial Spine",
+"Ischial Tuberosity"
+],
+[
+"Tendon of Obturator Internus",
+"Medial Surface of Greater Trochanter"
+]
+);
+
+addMuscle(
+"Quadratus Femoris",
+"Lower Limb",
+"Deep Gluteal Region",
+[
+"Hip External Rotation",
+"Hip Adduction",
+"Hip Stabilization"
+],
+"Nerve to Quadratus Femoris",
+"Sacral Plexus",
+["L4", "L5", "S1"],
+[
+"Lateral Border of Ischial Tuberosity"
+],
+[
+"Quadrate Tubercle of Femur"
+]
+);
+
+/*
+=================
+ANTERIOR THIGH
+=================
+*/
+
+addMuscleGroup(
+[
+"Rectus Femoris",
+"Vastus Lateralis",
+"Vastus Medialis",
+"Vastus Intermedius"
+],
+"Lower Limb",
+"Anterior Thigh",
+[
+"Knee Extension"
+],
+"Femoral Nerve",
+"Lumbar Plexus",
+["L2", "L3", "L4"]
+);
+
+addMuscle(
+"Sartorius",
+"Lower Limb",
+"Anterior Thigh",
+[
+"Hip Flexion",
+"Hip Abduction",
+"Hip External Rotation",
+"Knee Flexion"
+],
+"Femoral Nerve",
+"Lumbar Plexus",
+["L2", "L3"],
+[
+"Anterior Superior Iliac Spine"
+],
+[
+"Medial Proximal Tibia"
+]
+);
+
+addMuscle(
+"Iliacus",
+"Lower Limb",
+"Anterior Hip",
+[
+"Hip Flexion"
+],
+"Femoral Nerve",
+"Lumbar Plexus",
+["L2", "L3"],
+[
+"Iliac Fossa"
+],
+[
+"Lesser Trochanter"
+]
+);
+
+addMuscle(
+"Psoas Major",
+"Lower Limb",
+"Anterior Hip",
+[
+"Hip Flexion",
+"Trunk Flexion"
+],
+"Anterior Rami of Lumbar Nerves",
+"Lumbar Plexus",
+["L1", "L2", "L3"],
+[
+"Lumbar Vertebrae"
+],
+[
+"Lesser Trochanter"
+]
+);
+
+/*
+=================
+MEDIAL THIGH
+=================
+*/
+
+addMuscleGroup(
+[
+"Adductor Longus",
+"Adductor Brevis",
+"Gracilis",
+"Obturator Externus"
+],
+"Lower Limb",
+"Medial Thigh",
+[
+"Hip Adduction"
+],
+"Obturator Nerve",
+"Lumbar Plexus",
+["L2", "L3", "L4"]
+);
+
+addMuscle(
+"Adductor Magnus",
+"Lower Limb",
+"Medial Thigh",
+[
+"Hip Adduction",
+"Hip Extension"
+],
+"Obturator and Sciatic Nerves",
+"Lumbosacral Plexus",
+["L2", "L3", "L4", "L5", "S1"],
+[
+"Inferior Pubic Ramus",
+"Ischial Tuberosity"
+],
+[
+"Linea Aspera",
+"Adductor Tubercle"
+]
+);
+
+/*
+==================
+POSTERIOR THIGH
+==================
+*/
+
+addMuscleGroup(
+[
+"Semitendinosus",
+"Semimembranosus"
+],
+"Lower Limb",
+"Posterior Thigh",
+[
+"Hip Extension",
+"Knee Flexion"
+],
+"Tibial Division of Sciatic Nerve",
+"Sacral Plexus",
+["L5", "S1", "S2"]
+);
+
+addMuscle(
+"Biceps Femoris",
+"Lower Limb",
+"Posterior Thigh",
+[
+"Knee Flexion",
+"Hip Extension"
+],
+"Sciatic Nerve",
+"Sacral Plexus",
+["L5", "S1", "S2"],
+[
+"Ischial Tuberosity",
+"Linea Aspera"
+],
+[
+"Head of Fibula"
+]
+);
+
+/*
+=============
+ANTERIOR LEG
+=============
+*/
+
+addMuscleGroup(
+[
+"Tibialis Anterior",
+"Extensor Hallucis Longus",
+"Extensor Digitorum Longus",
+"Fibularis Tertius"
+],
+"Lower Limb",
+"Anterior Leg",
+[
+"Dorsiflexion",
+"Toe Extension"
+],
+"Deep Fibular Nerve",
+"Sacral Plexus",
+["L4", "L5", "S1"]
+);
+
+/*
+=============
+LATERAL LEG
+=============
+*/
+
+addMuscleGroup(
+[
+"Fibularis Longus",
+"Fibularis Brevis"
+],
+"Lower Limb",
+"Lateral Leg",
+[
+"Foot Eversion",
+"Plantarflexion"
+],
+"Superficial Fibular Nerve",
+"Sacral Plexus",
+["L5", "S1", "S2"]
+);
+
+/*
+=================
+POSTERIOR LEG
+=================
+*/
+
+addMuscleGroup(
+[
+"Gastrocnemius",
+"Soleus",
+"Plantaris"
+],
+"Lower Limb",
+"Superficial Posterior Leg",
+[
+"Plantarflexion"
+],
+"Tibial Nerve",
+"Sacral Plexus",
+["S1", "S2"]
+);
+
+addMuscleGroup(
+[
+"Popliteus",
+"Tibialis Posterior",
+"Flexor Digitorum Longus",
+"Flexor Hallucis Longus"
+],
+"Lower Limb",
+"Deep Posterior Leg",
+[
+"Plantarflexion",
+"Foot Inversion",
+"Toe Flexion"
+],
+"Tibial Nerve",
+"Sacral Plexus",
+["L4", "L5", "S1", "S2"]
+);
+
+/*
+=================
+INTRINSIC FOOT
+=================
+*/
+
+addMuscleGroup(
+[
+"Extensor Digitorum Brevis",
+"Extensor Hallucis Brevis"
+],
+"Lower Limb",
+"Dorsal Foot",
+[
+"Toe Extension"
+],
+"Deep Fibular Nerve",
+"Sacral Plexus",
+["L5", "S1"]
+);
+
+addMuscleGroup(
+[
+"Abductor Hallucis",
+"Flexor Digitorum Brevis",
+"Abductor Digiti Minimi Foot",
+"Quadratus Plantae",
+"Flexor Hallucis Brevis",
+"Adductor Hallucis",
+"Flexor Digiti Minimi Brevis Foot"
+],
+"Lower Limb",
+"Plantar Foot",
+[
+"Toe Flexion"
+],
+"Medial or Lateral Plantar Nerve",
+"Sacral Plexus",
+["S2", "S3"]
+);
+
+addMuscle(
+"Plantar Interossei of Foot",
+"Lower Limb",
+"Plantar Foot",
+[
+"Toe Adduction",
+"MTP Flexion",
+"IP Extension"
+],
+"Lateral Plantar Nerve",
+"Sacral Plexus",
+["S2", "S3"],
+[
+"Medial Sides of Metatarsals 3-5"
+],
+[
+"Proximal Phalanges and Extensor Expansions of Toes 3-5"
+]
+);
+
+addMuscle(
+"Dorsal Interossei of Foot",
+"Lower Limb",
+"Plantar Foot",
+[
+"Toe Abduction",
+"MTP Flexion",
+"IP Extension"
+],
+"Lateral Plantar Nerve",
+"Sacral Plexus",
+["S2", "S3"],
+[
+"Adjacent Sides of Metatarsals"
+],
+[
+"Proximal Phalanges and Extensor Expansions of Toes 2-4"
+]
+);
+
+/*
+=================
+ABDOMINAL WALL
+=================
+*/
+
+addMuscleGroup(
+[
+"Rectus Abdominis",
+"External Oblique",
+"Internal Oblique",
+"Transversus Abdominis",
+"Pyramidalis"
+],
+"Trunk",
+"Abdominal Wall",
+[
+"Trunk Flexion",
+"Abdominal Compression",
+"Trunk Rotation"
+],
+"Thoracoabdominal Nerves",
+"Thoracic Spinal Nerves",
+["T6", "T7", "T8", "T9", "T10", "T11", "T12", "L1"]
+);
+
+/*
+===============
+THORACIC WALL
+===============
+*/
+
+addMuscleGroup(
+[
+"External Intercostals",
+"Internal Intercostals",
+"Innermost Intercostals",
+"Transversus Thoracis",
+"Subcostals"
+],
+"Trunk",
+"Thoracic Wall",
+[
+"Respiration",
+"Rib Movement"
+],
+"Intercostal Nerves",
+"Thoracic Spinal Nerves",
+["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11"]
+);
+
+addMuscle(
+"Diaphragm",
+"Trunk",
+"Thoracoabdominal Boundary",
+[
+"Inspiration"
+],
+"Phrenic Nerve",
+"Cervical Plexus",
+["C3", "C4", "C5"],
+[
+"Xiphoid Process",
+"Lower Ribs",
+"Lumbar Vertebrae"
+],
+[
+"Central Tendon"
+]
+);
+
+/*
+===============
+DEEP BACK
+===============
+*/
+
+addMuscle(
+"Iliocostalis",
+"Back",
+"Erector Spinae",
+[
+"Spinal Extension",
+"Lateral Flexion"
+],
+"Posterior Rami of Spinal Nerves",
+"Posterior Rami",
+[
+"C4", "C5", "C6", "C7",
+"T1", "T2", "T3", "T4", "T5", "T6",
+"T7", "T8", "T9", "T10", "T11", "T12",
+"L1", "L2", "L3", "L4", "L5"
+],
+[
+"Sacrum",
+"Iliac Crest",
+"Thoracolumbar Fascia",
+"Lower Ribs"
+],
+[
+"Angles of Ribs",
+"Cervical Transverse Processes"
+]
+);
+
+addMuscle(
+"Longissimus",
+"Back",
+"Erector Spinae",
+[
+"Spinal Extension",
+"Lateral Flexion",
+"Head Extension",
+"Ipsilateral Head Rotation"
+],
+"Posterior Rami of Spinal Nerves",
+"Posterior Rami",
+[
+"C1", "C2", "C3", "C4", "C5", "C6", "C7",
+"T1", "T2", "T3", "T4", "T5", "T6",
+"T7", "T8", "T9", "T10", "T11", "T12",
+"L1", "L2", "L3", "L4", "L5"
+],
+[
+"Sacrum",
+"Iliac Crest",
+"Lumbar Transverse Processes"
+],
+[
+"Thoracic and Cervical Transverse Processes",
+"Ribs",
+"Mastoid Process"
+]
+);
+
+addMuscle(
+"Spinalis",
+"Back",
+"Erector Spinae",
+[
+"Spinal Extension"
+],
+"Posterior Rami of Spinal Nerves",
+"Posterior Rami",
+[
+"C2", "C3", "C4", "C5", "C6", "C7",
+"T1", "T2", "T3", "T4", "T5", "T6",
+"T7", "T8", "T9", "T10", "T11", "T12"
+],
+[
+"Spinous Processes of Lower Thoracic and Upper Lumbar Vertebrae"
+],
+[
+"Spinous Processes of Upper Thoracic and Cervical Vertebrae"
+]
+);
+
+addMuscle(
+"Semispinalis",
+"Back",
+"Transversospinalis",
+[
+"Spinal Extension",
+"Head Extension",
+"Contralateral Rotation"
+],
+"Posterior Rami of Spinal Nerves",
+"Posterior Rami",
+[
+"C1", "C2", "C3", "C4", "C5", "C6", "C7",
+"T1", "T2", "T3", "T4", "T5", "T6",
+"T7", "T8", "T9", "T10", "T11", "T12"
+],
+[
+"Transverse Processes of Upper Thoracic and Lower Cervical Vertebrae"
+],
+[
+"Occipital Bone",
+"Spinous Processes Four to Six Levels Superior"
+]
+);
+
+addMuscle(
+"Multifidus",
+"Back",
+"Transversospinalis",
+[
+"Spinal Stabilization",
+"Spinal Extension",
+"Contralateral Rotation"
+],
+"Posterior Rami of Spinal Nerves",
+"Posterior Rami",
+[
+"C1", "C2", "C3", "C4", "C5", "C6", "C7",
+"T1", "T2", "T3", "T4", "T5", "T6",
+"T7", "T8", "T9", "T10", "T11", "T12",
+"L1", "L2", "L3", "L4", "L5",
+"S1", "S2", "S3", "S4"
+],
+[
+"Sacrum",
+"Posterior Superior Iliac Spine",
+"Mammillary Processes",
+"Thoracic Transverse Processes"
+],
+[
+"Spinous Processes Two to Four Levels Superior"
+]
+);
+
+addMuscle(
+"Rotatores",
+"Back",
+"Transversospinalis",
+[
+"Spinal Stabilization",
+"Contralateral Rotation",
+"Proprioception"
+],
+"Posterior Rami of Spinal Nerves",
+"Posterior Rami",
+[
+"C1", "C2", "C3", "C4", "C5", "C6", "C7",
+"T1", "T2", "T3", "T4", "T5", "T6",
+"T7", "T8", "T9", "T10", "T11", "T12",
+"L1", "L2", "L3", "L4", "L5"
+],
+[
+"Transverse Processes"
+],
+[
+"Lamina and Spinous Process One to Two Levels Superior"
+]
+);
+
+/*
+==================
+NECK
+==================
+*/
+
+addMuscle(
+"Sternocleidomastoid",
+"Head and Neck",
+"Anterior Neck",
+[
+"Neck Flexion",
+"Contralateral Rotation"
+],
+"Accessory Nerve",
+"Cranial and Cervical",
+["CN XI", "C2", "C3"],
+[
+"Sternum",
+"Clavicle"
+],
+[
+"Mastoid Process"
+]
+);
+
+addMuscleGroup(
+[
+"Anterior Scalene",
+"Middle Scalene",
+"Posterior Scalene",
+"Longus Capitis",
+"Longus Colli"
+],
+"Head and Neck",
+"Deep Neck",
+[
+"Neck Flexion",
+"Lateral Flexion",
+"Rib Elevation"
+],
+"Cervical Spinal Nerves",
+"Cervical Plexus",
+["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8"]
+);
+
+addMuscleGroup(
+[
+"Splenius Capitis",
+"Splenius Cervicis"
+],
+"Head and Neck",
+"Posterior Neck",
+[
+"Neck Extension",
+"Ipsilateral Rotation"
+],
+"Posterior Rami of Cervical Nerves",
+"Posterior Rami",
+["C3", "C4", "C5", "C6", "C7", "C8"]
+);
+
+/*
+==================
+MUSCLES OF FACIAL EXPRESSION
+==================
+*/
+
+addMuscleGroup(
+[
+"Frontalis",
+"Occipitalis",
+"Orbicularis Oculi",
+"Corrugator Supercilii",
+"Procerus",
+"Nasalis",
+"Orbicularis Oris",
+"Buccinator",
+"Zygomaticus Major",
+"Zygomaticus Minor",
+"Levator Labii Superioris",
+"Levator Anguli Oris",
+"Risorius",
+"Depressor Anguli Oris",
+"Depressor Labii Inferioris",
+"Mentalis",
+"Platysma"
+],
+"Head and Neck",
+"Facial Expression",
+[
+"Facial Expression"
+],
+"Facial Nerve",
+"Cranial Nerve",
+["CN VII"]
+);
+
+/*
+==================
+MASTICATION
+==================
+*/
+
+addMuscleGroup(
+[
+"Masseter",
+"Temporalis",
+"Medial Pterygoid",
+"Lateral Pterygoid"
+],
+"Head and Neck",
+"Mastication",
+[
+"Jaw Movement",
+"Mastication"
+],
+"Mandibular Division of Trigeminal Nerve",
+"Cranial Nerve",
+["CN V3"]
+);
+
+/*
+==================
+SUPRAHYOID AND INFRAHYOID
+==================
+*/
+
+addMuscleGroup(
+[
+"Mylohyoid",
+"Anterior Belly of Digastric"
+],
+"Head and Neck",
+"Suprahyoid",
+[
+"Hyoid Elevation",
+"Swallowing"
+],
+"Mandibular Division of Trigeminal Nerve",
+"Cranial Nerve",
+["CN V3"]
+);
+
+addMuscleGroup(
+[
+"Stylohyoid",
+"Posterior Belly of Digastric"
+],
+"Head and Neck",
+"Suprahyoid",
+[
+"Hyoid Elevation",
+"Swallowing"
+],
+"Facial Nerve",
+"Cranial Nerve",
+["CN VII"]
+);
+
+addMuscle(
+"Geniohyoid",
+"Head and Neck",
+"Suprahyoid",
+[
+"Hyoid Elevation",
+"Swallowing"
+],
+"C1 Fibers through Hypoglossal Nerve",
+"Cervical Plexus",
+["C1"],
+[
+"Mental Spine of Mandible"
+],
+[
+"Hyoid Bone"
+]
+);
+
+addMuscleGroup(
+[
+"Sternohyoid",
+"Omohyoid",
+"Sternothyroid",
+"Thyrohyoid"
+],
+"Head and Neck",
+"Infrahyoid",
+[
+"Hyoid Depression",
+"Larynx Movement"
+],
+"Ansa Cervicalis",
+"Cervical Plexus",
+["C1", "C2", "C3"]
+);
+
+/*
+==================
+PELVIC FLOOR
+==================
+*/
+
+addMuscle(
+"Levator Ani",
+"Pelvis",
+"Pelvic Floor",
+[
+"Pelvic Organ Support",
+"Pelvic Floor Elevation",
+"Continence"
+],
+"Nerve to Levator Ani",
+"Sacral Plexus",
+["S3", "S4"],
+[
+"Body of Pubis",
+"Tendinous Arch of Obturator Fascia",
+"Ischial Spine"
+],
+[
+"Perineal Body",
+"Anococcygeal Ligament",
+"Coccyx"
+]
+);
+
+addMuscle(
+"Coccygeus",
+"Pelvis",
+"Pelvic Floor",
+[
+"Pelvic Organ Support",
+"Coccyx Flexion"
+],
+"Anterior Rami of Sacral Nerves",
+"Sacral Plexus",
+["S4", "S5"],
+[
+"Ischial Spine"
+],
+[
+"Lower Sacrum",
+"Coccyx"
+]
+);
+
+addMuscle(
+"External Anal Sphincter",
+"Pelvis",
+"Perineum",
+[
+"Anal Canal Closure",
+"Fecal Continence"
+],
+"Inferior Rectal Nerve",
+"Sacral Plexus",
+["S2", "S3", "S4"],
+[
+"Perineal Body",
+"Anococcygeal Ligament"
+],
+[
+"Encircles Anal Canal"
+]
+);
+
+addMuscle(
+"External Urethral Sphincter",
+"Pelvis",
+"Perineum",
+[
+"Urethral Closure",
+"Urinary Continence"
+],
+"Deep Perineal Branch of Pudendal Nerve",
+"Sacral Plexus",
+["S2", "S3", "S4"],
+[
+"Perineal Membrane",
+"Surrounding Fascial Structures"
+],
+[
+"Encircles Urethra"
+]
+);
+
+
+
+/*
+==========================================
+PART 5: BACKWARD-COMPATIBLE STUDY DATA
+==========================================
+*/
+
+const part5StudyOverrides = {
+"Trapezius": {
+bloodSupply: [
+"Transverse Cervical Artery"
+],
+
+clinical:
+"Accessory nerve injury can cause shoulder droop, weak shoulder shrug, and impaired upward rotation of the scapula.",
+
+studyNote:
+"Upper fibers elevate, middle fibers retract, and lower fibers depress the scapula. Upper and lower fibers cooperate in upward rotation.",
+
+difficulty:
+"Foundational",
+
+reviewed:
+true
+},
+
+"Levator Scapulae": {
+bloodSupply: [
+"Dorsal Scapular Artery",
+"Transverse Cervical Artery"
+],
+
+clinical:
+"Levator Scapulae may contribute to superior-medial scapular and neck pain when shortened or overactive.",
+
+studyNote:
+"Its cervical origin and superior-medial scapular insertion permit elevation and downward rotation.",
+
+difficulty:
+"Standard",
+
+reviewed:
+true
+},
+
+"Rhomboid Major": {
+bloodSupply: [
+"Dorsal Scapular Artery"
+],
+
+clinical:
+"Dorsal scapular nerve dysfunction can weaken scapular retraction and stabilization.",
+
+studyNote:
+"Rhomboid Major originates from T2-T5 and inserts below the medial end of the scapular spine.",
+
+difficulty:
+"Standard",
+
+reviewed:
+true
+},
+
+"Rhomboid Minor": {
+bloodSupply: [
+"Dorsal Scapular Artery"
+],
+
+clinical:
+"Weakness can reduce scapular retraction and contribute to altered scapular positioning.",
+
+studyNote:
+"Rhomboid Minor inserts near the medial end of the scapular spine, superior to Rhomboid Major.",
+
+difficulty:
+"Standard",
+
+reviewed:
+true
+},
+
+"Serratus Anterior": {
+bloodSupply: [
+"Lateral Thoracic Artery",
+"Thoracodorsal Artery"
+],
+
+clinical:
+"Long thoracic nerve injury can cause medial scapular winging and difficulty elevating the arm above shoulder level.",
+
+studyNote:
+"Serratus Anterior protracts the scapula and works with Trapezius during upward rotation.",
+
+difficulty:
+"Foundational",
+
+reviewed:
+true
+},
+
+"Pectoralis Minor": {
+bloodSupply: [
+"Pectoral Branch of Thoracoacromial Artery",
+"Lateral Thoracic Artery"
+],
+
+clinical:
+"A shortened Pectoralis Minor may contribute to anterior scapular tilt and compression in the pectoral region.",
+
+studyNote:
+"It runs from ribs 3-5 to the coracoid process and acts directly on the scapula.",
+
+difficulty:
+"Standard",
+
+reviewed:
+true
+},
+
+"Pectoralis Major": {
+bloodSupply: [
+"Pectoral Branch of Thoracoacromial Artery",
+"Lateral Thoracic Artery"
+],
+
+clinical:
+"Pectoralis Major tendon rupture may occur during forceful eccentric loading, such as a heavy bench press.",
+
+studyNote:
+"The clavicular portion emphasizes flexion. The sternocostal portion can extend the arm from a flexed position.",
+
+difficulty:
+"Foundational",
+
+reviewed:
+true
+},
+
+"Latissimus Dorsi": {
+bloodSupply: [
+"Thoracodorsal Artery"
+],
+
+clinical:
+"Thoracodorsal nerve dysfunction can weaken shoulder extension, adduction, and internal rotation.",
+
+studyNote:
+"Latissimus Dorsi inserts into the floor of the intertubercular sulcus and is functionally important during climbing and pulling.",
+
+difficulty:
+"Foundational",
+
+reviewed:
+true
+},
+
+"Supraspinatus": {
+bloodSupply: [
+"Suprascapular Artery"
+],
+
+clinical:
+"Supraspinatus is commonly involved in rotator-cuff tendinopathy and tears, with pain or weakness during resisted abduction.",
+
+studyNote:
+"It initiates early shoulder abduction and inserts on the superior facet of the greater tubercle.",
+
+difficulty:
+"Foundational",
+
+reviewed:
+true
+},
+
+"Infraspinatus": {
+bloodSupply: [
+"Suprascapular Artery",
+"Circumflex Scapular Artery"
+],
+
+clinical:
+"Suprascapular nerve injury near the spinoglenoid notch may selectively weaken Infraspinatus and external rotation.",
+
+studyNote:
+"Infraspinatus inserts on the middle facet of the greater tubercle and externally rotates the humerus.",
+
+difficulty:
+"Standard",
+
+reviewed:
+true
+},
+
+"Teres Minor": {
+bloodSupply: [
+"Circumflex Scapular Artery",
+"Posterior Circumflex Humeral Artery"
+],
+
+clinical:
+"Teres Minor may be affected by axillary nerve injury or quadrangular-space syndrome.",
+
+studyNote:
+"Unlike Infraspinatus, Teres Minor is supplied by the Axillary Nerve and inserts on the inferior greater-tubercle facet.",
+
+difficulty:
+"Standard",
+
+reviewed:
+true
+},
+
+"Subscapularis": {
+bloodSupply: [
+"Subscapular Artery"
+],
+
+clinical:
+"A positive lift-off or belly-press test may indicate Subscapularis dysfunction.",
+
+studyNote:
+"Subscapularis is the only rotator-cuff muscle that inserts on the lesser tubercle.",
+
+difficulty:
+"Foundational",
+
+reviewed:
+true
+},
+
+"Teres Major": {
+bloodSupply: [
+"Circumflex Scapular Artery",
+"Subscapular Artery"
+],
+
+clinical:
+"Teres Major assists Latissimus Dorsi but is not a rotator-cuff muscle.",
+
+studyNote:
+"Differentiate it from Teres Minor by internal rotation and insertion on the medial lip of the intertubercular sulcus.",
+
+difficulty:
+"Standard",
+
+reviewed:
+true
+},
+
+"Brachialis": {
+bloodSupply: [
+"Brachial Artery",
+"Radial Recurrent Artery"
+],
+
+clinical:
+"Brachialis is a strong elbow flexor regardless of forearm pronation or supination.",
+
+studyNote:
+"Unlike Biceps Brachii, Brachialis inserts on the ulna and does not produce forearm supination.",
+
+difficulty:
+"Foundational",
+
+reviewed:
+true
+},
+
+"Coracobrachialis": {
+bloodSupply: [
+"Brachial Artery"
+],
+
+clinical:
+"The Musculocutaneous Nerve pierces Coracobrachialis and may be vulnerable to compression or trauma in this region.",
+
+studyNote:
+"Coracobrachialis shares a coracoid origin with the short head of Biceps Brachii.",
+
+difficulty:
+"Standard",
+
+reviewed:
+true
+},
+
+"Anconeus": {
+bloodSupply: [
+"Middle Collateral Artery",
+"Interosseous Recurrent Artery"
+],
+
+clinical:
+"Anconeus assists elbow extension and stabilizes the elbow during forearm movement.",
+
+studyNote:
+"It extends from the lateral epicondyle to the lateral olecranon and proximal posterior ulna.",
+
+difficulty:
+"Expert",
+
+reviewed:
+true
+},
+"Brachioradialis": {
+bloodSupply: [
+"Radial Recurrent Artery"
+],
+
+clinical:
+"The brachioradialis reflex primarily evaluates the C6 spinal level and Radial Nerve function.",
+
+studyNote:
+"Although located in the posterior forearm and supplied by the Radial Nerve, Brachioradialis flexes the elbow most effectively with the forearm in neutral.",
+
+difficulty:
+"Foundational",
+
+reviewed:
+true
+},
+
+"Extensor Carpi Radialis Longus": {
+bloodSupply: [
+"Radial Artery",
+"Radial Recurrent Artery"
+],
+
+clinical:
+"Radial nerve dysfunction proximal to the elbow may weaken wrist extension and radial deviation.",
+
+studyNote:
+"Extensor Carpi Radialis Longus inserts on the second metacarpal and is supplied directly by the Radial Nerve.",
+
+difficulty:
+"Foundational",
+
+reviewed:
+true
+},
+
+"Extensor Carpi Radialis Brevis": {
+bloodSupply: [
+"Radial Recurrent Artery"
+],
+
+clinical:
+"Its common extensor origin is frequently associated with lateral epicondylalgia.",
+
+studyNote:
+"Differentiate it from Extensor Carpi Radialis Longus by its lateral-epicondyle origin, third-metacarpal insertion, and deep radial nerve supply.",
+
+difficulty:
+"Standard",
+
+reviewed:
+true
+},
+
+"Extensor Digitorum": {
+bloodSupply: [
+"Posterior Interosseous Artery"
+],
+
+clinical:
+"Posterior interosseous nerve palsy may impair finger MCP extension while wrist extension can remain partially preserved.",
+
+studyNote:
+"Extensor Digitorum provides the principal common extensor tendons to digits 2 through 5.",
+
+difficulty:
+"Foundational",
+
+reviewed:
+true
+},
+
+"Extensor Digiti Minimi": {
+bloodSupply: [
+"Posterior Interosseous Artery"
+],
+
+clinical:
+"Posterior interosseous nerve dysfunction may weaken independent extension of the little finger.",
+
+studyNote:
+"Its tendon joins the extensor mechanism of digit 5, allowing more independent little-finger extension.",
+
+difficulty:
+"Standard",
+
+reviewed:
+true
+},
+
+"Extensor Carpi Ulnaris": {
+bloodSupply: [
+"Posterior Interosseous Artery"
+],
+
+clinical:
+"Extensor Carpi Ulnaris tendinopathy or tendon instability can produce ulnar-sided wrist pain.",
+
+studyNote:
+"It extends and ulnarly deviates the wrist and inserts at the base of the fifth metacarpal.",
+
+difficulty:
+"Foundational",
+
+reviewed:
+true
+},
+
+"Supinator": {
+bloodSupply: [
+"Recurrent Interosseous Artery"
+],
+
+clinical:
+"The deep branch of the Radial Nerve passes through the Supinator and can be compressed in radial tunnel or posterior interosseous nerve syndromes.",
+
+studyNote:
+"Supinator is most important during unresisted or slow supination, while Biceps Brachii contributes strongly during resisted supination.",
+
+difficulty:
+"Standard",
+
+reviewed:
+true
+},
+
+"Abductor Pollicis Longus": {
+bloodSupply: [
+"Posterior Interosseous Artery"
+],
+
+clinical:
+"Abductor Pollicis Longus shares the first dorsal extensor compartment with Extensor Pollicis Brevis and may be involved in de Quervain tenosynovitis.",
+
+studyNote:
+"It inserts on the first metacarpal, producing thumb CMC abduction and assisting extension.",
+
+difficulty:
+"Standard",
+
+reviewed:
+true
+},
+
+"Extensor Pollicis Brevis": {
+bloodSupply: [
+"Posterior Interosseous Artery"
+],
+
+clinical:
+"Extensor Pollicis Brevis shares the first dorsal extensor compartment with Abductor Pollicis Longus.",
+
+studyNote:
+"It inserts on the proximal phalanx, distinguishing it from Extensor Pollicis Longus, which reaches the distal phalanx.",
+
+difficulty:
+"Standard",
+
+reviewed:
+true
+},
+
+"Extensor Pollicis Longus": {
+bloodSupply: [
+"Posterior Interosseous Artery"
+],
+
+clinical:
+"The Extensor Pollicis Longus tendon can rupture after distal-radius fracture or around Lister's tubercle.",
+
+studyNote:
+"Its tendon changes direction around Lister's tubercle and inserts on the distal phalanx of the thumb.",
+
+difficulty:
+"Standard",
+
+reviewed:
+true
+},
+
+"Extensor Indicis": {
+bloodSupply: [
+"Posterior Interosseous Artery"
+],
+
+clinical:
+"Extensor Indicis provides independent index-finger extension and may be used in tendon-transfer procedures.",
+
+studyNote:
+"It joins the index extensor expansion and allows extension somewhat independently of Extensor Digitorum.",
+
+difficulty:
+"Expert",
+
+reviewed:
+true
+},
+"Pronator Teres": {
+bloodSupply: [
+"Anterior Ulnar Recurrent Artery",
+"Radial Artery"
+],
+
+clinical:
+"Median nerve compression between the two heads of Pronator Teres may contribute to pronator syndrome, with forearm pain and median-distribution symptoms.",
+
+studyNote:
+"Pronator Teres pronates the forearm and weakly flexes the elbow. The Median Nerve passes between its humeral and ulnar heads.",
+
+difficulty:
+"Foundational",
+
+reviewed:
+true
+},
+
+"Flexor Carpi Radialis": {
+bloodSupply: [
+"Radial Artery"
+],
+
+clinical:
+"Flexor Carpi Radialis tendinopathy may produce volar-radial wrist pain, especially during resisted wrist flexion.",
+
+studyNote:
+"Flexor Carpi Radialis combines wrist flexion with radial deviation and inserts primarily at the base of the second metacarpal.",
+
+difficulty:
+"Foundational",
+
+reviewed:
+true
+},
+
+"Palmaris Longus": {
+bloodSupply: [
+"Posterior Ulnar Recurrent Artery"
+],
+
+clinical:
+"Palmaris Longus is anatomically variable and may be absent. Its tendon is commonly considered for tendon grafting.",
+
+studyNote:
+"Its long tendon passes superficial to the flexor retinaculum and blends with the palmar aponeurosis.",
+
+difficulty:
+"Standard",
+
+reviewed:
+true
+},
+
+"Flexor Digitorum Superficialis": {
+bloodSupply: [
+"Ulnar Artery",
+"Radial Artery"
+],
+
+clinical:
+"Flexor Digitorum Superficialis function can be tested by holding the other fingers extended while asking the patient to flex the tested finger at the PIP joint.",
+
+studyNote:
+"Its tendons split to allow the Flexor Digitorum Profundus tendons to pass toward the distal phalanges.",
+
+difficulty:
+"Standard",
+
+reviewed:
+true
+},
+
+"Flexor Carpi Ulnaris": {
+bloodSupply: [
+"Posterior Ulnar Recurrent Artery",
+"Ulnar Artery"
+],
+
+clinical:
+"The Ulnar Nerve passes between the humeral and ulnar heads of Flexor Carpi Ulnaris and may be compressed near the elbow.",
+
+studyNote:
+"Flexor Carpi Ulnaris is the only superficial anterior-forearm muscle supplied by the Ulnar Nerve.",
+
+difficulty:
+"Foundational",
+
+reviewed:
+true
+},
+
+"Flexor Digitorum Profundus": {
+bloodSupply: [
+"Anterior Interosseous Artery",
+"Ulnar Artery"
+],
+
+clinical:
+"Loss of distal interphalangeal flexion can indicate tendon injury or dysfunction of its Median or Ulnar nerve supply.",
+
+studyNote:
+"Digits 2 and 3 are supplied through the Anterior Interosseous Nerve, while digits 4 and 5 receive Ulnar Nerve supply.",
+
+difficulty:
+"Standard",
+
+reviewed:
+true
+},
+
+"Flexor Pollicis Longus": {
+bloodSupply: [
+"Anterior Interosseous Artery"
+],
+
+clinical:
+"Anterior interosseous nerve palsy may weaken thumb interphalangeal flexion and impair formation of a normal OK sign.",
+
+studyNote:
+"Flexor Pollicis Longus is the principal flexor of the thumb interphalangeal joint.",
+
+difficulty:
+"Standard",
+
+reviewed:
+true
+},
+
+"Pronator Quadratus": {
+bloodSupply: [
+"Anterior Interosseous Artery"
+],
+
+clinical:
+"Anterior interosseous nerve dysfunction can weaken pronation, although Pronator Teres may partially compensate.",
+
+studyNote:
+"Pronator Quadratus is the deepest anterior-forearm muscle and is an important stabilizer of the distal radioulnar joint.",
+
+difficulty:
+"Standard",
+
+reviewed:
+true
+},
+"Biceps Brachii": {
+bloodSupply: [
+"Brachial Artery"
+],
+
+clinical:
+"The biceps tendon and musculocutaneous nerve may be assessed during elbow-flexion and forearm-supination testing.",
+
+studyNote:
+"Remember that the long head begins at the supraglenoid tubercle and the short head begins at the coracoid process.",
+
+difficulty:
+"Foundational",
+
+reviewed:
+true
+},
+
+"Triceps Brachii": {
+bloodSupply: [
+"Profunda Brachii Artery"
+],
+
+clinical:
+"Radial nerve injury can weaken elbow extension. The triceps reflex primarily evaluates C7.",
+
+studyNote:
+"The long head crosses the shoulder joint, while the lateral and medial heads originate from the humerus.",
+
+difficulty:
+"Foundational",
+
+reviewed:
+true
+},
+
+"Deltoid": {
+bloodSupply: [
+"Posterior Circumflex Humeral Artery",
+"Deltoid Branch of Thoracoacromial Artery"
+],
+
+clinical:
+"Axillary nerve injury may produce weak shoulder abduction and reduced sensation over the lateral shoulder.",
+
+studyNote:
+"Anterior fibers flex and internally rotate, middle fibers abduct, and posterior fibers extend and externally rotate the humerus.",
+
+difficulty:
+"Foundational",
+
+reviewed:
+true
+},
+
+"Rectus Femoris": {
+bloodSupply: [
+"Lateral Circumflex Femoral Artery"
+],
+
+clinical:
+"Because it crosses the hip and knee, rectus femoris length changes with combined hip and knee positioning.",
+
+studyNote:
+"Unlike the vasti, rectus femoris performs both knee extension and hip flexion.",
+
+difficulty:
+"Foundational",
+
+reviewed:
+true
+},
+
+"Gastrocnemius": {
+bloodSupply: [
+"Sural Branches of the Popliteal Artery"
+],
+
+clinical:
+"Gastrocnemius strain commonly occurs near the musculotendinous junction. It crosses both the knee and ankle.",
+
+studyNote:
+"Knee position affects gastrocnemius contribution to plantarflexion because the muscle crosses both joints.",
+
+difficulty:
+"Foundational",
+
+reviewed:
+true
+},
+
+"Tibialis Anterior": {
+bloodSupply: [
+"Anterior Tibial Artery"
+],
+
+clinical:
+"Deep fibular nerve injury may weaken dorsiflexion and contribute to foot drop.",
+
+studyNote:
+"Tibialis anterior combines dorsiflexion with inversion.",
+
+difficulty:
+"Foundational",
+
+reviewed:
+true
+},
+
+"Diaphragm": {
+bloodSupply: [
+"Pericardiacophrenic Artery",
+"Musculophrenic Artery",
+"Inferior Phrenic Arteries"
+],
+
+clinical:
+"Phrenic nerve dysfunction may produce diaphragmatic weakness or an elevated hemidiaphragm.",
+
+studyNote:
+"C3, C4, and C5 contribute to the phrenic nerve.",
+
+difficulty:
+"Foundational",
+
+reviewed:
+true
+},
+
+"Sternocleidomastoid": {
+bloodSupply: [
+"Occipital Artery",
+"Superior Thyroid Artery"
+],
+
+clinical:
+"Accessory nerve injury may weaken head rotation and shoulder elevation when trapezius is also affected.",
+
+studyNote:
+"Unilateral contraction produces ipsilateral lateral flexion and contralateral rotation.",
+
+difficulty:
+"Foundational",
+
+reviewed:
+true
+}
+};
+
+muscles.forEach(
+function (muscle) {
+const override =
+part5StudyOverrides[
+muscle.name
+] || {};
+
+muscle.bloodSupply =
+override.bloodSupply ||
+[
+"Detailed arterial supply will be added during Part 5 dataset review."
+];
+
+muscle.clinical =
+override.clinical ||
+"Clinical correlation will be added during Part 5 dataset review.";
+
+muscle.studyNote =
+override.studyNote ||
+"Review the relationship among this muscle's compartment, attachments, innervation, and actions.";
+
+muscle.difficulty =
+override.difficulty ||
+"Standard";
+
+muscle.targetEligible =
+override.targetEligible !==
+undefined
+? override.targetEligible
+: true;
+
+muscle.reviewed =
+override.reviewed === true;
+}
+);
+
+
+
+
+/* VERIFIED DATA COMPLETION: PUBLIC ANATOMY CROSS-CHECK */
+const verifiedData = {};
+function vd(name, origin, insertion, actions, nerve, roots, blood, difficulty) {
+    verifiedData[name] = { origin, insertion, actions, innervation: nerve, roots, bloodSupply: blood, difficulty: difficulty || "Standard" };
+}
+
+/* Intrinsic hand */
+vd("Abductor Pollicis Brevis", ["Flexor Retinaculum", "Scaphoid Tubercle", "Trapezium Tubercle"], ["Lateral Base of Proximal Phalanx of Thumb"], ["Thumb Abduction"], "Recurrent Branch of Median Nerve", ["C8", "T1"], ["Superficial Palmar Branch of Radial Artery"]);
+vd("Flexor Pollicis Brevis", ["Flexor Retinaculum", "Trapezium Tubercle"], ["Lateral Base of Proximal Phalanx of Thumb"], ["Thumb MCP Flexion"], "Recurrent Branch of Median Nerve and Deep Branch of Ulnar Nerve", ["C8", "T1"], ["Superficial Palmar Arch"]);
+vd("Opponens Pollicis", ["Flexor Retinaculum", "Trapezium Tubercle"], ["Lateral Side of First Metacarpal"], ["Thumb Opposition"], "Recurrent Branch of Median Nerve", ["C8", "T1"], ["Superficial Palmar Branch of Radial Artery"]);
+vd("Abductor Digiti Minimi Hand", ["Pisiform", "Tendon of Flexor Carpi Ulnaris"], ["Medial Base of Proximal Phalanx of Digit 5"], ["Little Finger Abduction", "MCP Flexion"], "Deep Branch of Ulnar Nerve", ["C8", "T1"], ["Ulnar Artery"]);
+vd("Flexor Digiti Minimi Brevis Hand", ["Hook of Hamate", "Flexor Retinaculum"], ["Medial Base of Proximal Phalanx of Digit 5"], ["Little Finger MCP Flexion"], "Deep Branch of Ulnar Nerve", ["C8", "T1"], ["Ulnar Artery"]);
+vd("Opponens Digiti Minimi", ["Hook of Hamate", "Flexor Retinaculum"], ["Medial Border of Fifth Metacarpal"], ["Little Finger Opposition"], "Deep Branch of Ulnar Nerve", ["C8", "T1"], ["Ulnar Artery"]);
+
+/* Gluteal and thigh */
+vd("Gluteus Medius", ["External Ilium Between Anterior and Posterior Gluteal Lines"], ["Lateral Surface of Greater Trochanter"], ["Hip Abduction", "Hip Internal Rotation", "Pelvic Stabilization"], "Superior Gluteal Nerve", ["L4", "L5", "S1"], ["Superior Gluteal Artery"]);
+vd("Gluteus Minimus", ["External Ilium Between Anterior and Inferior Gluteal Lines"], ["Anterior Surface of Greater Trochanter"], ["Hip Abduction", "Hip Internal Rotation", "Pelvic Stabilization"], "Superior Gluteal Nerve", ["L4", "L5", "S1"], ["Superior Gluteal Artery"]);
+vd("Tensor Fasciae Latae", ["Anterior Superior Iliac Spine", "Anterior Iliac Crest"], ["Iliotibial Tract"], ["Hip Flexion", "Hip Abduction", "Hip Internal Rotation", "Knee Stabilization"], "Superior Gluteal Nerve", ["L4", "L5", "S1"], ["Superior Gluteal Artery", "Lateral Circumflex Femoral Artery"]);
+vd("Rectus Femoris", ["Anterior Inferior Iliac Spine", "Ilium Superior to Acetabulum"], ["Tibial Tuberosity via Patella and Patellar Ligament"], ["Knee Extension", "Hip Flexion"], "Femoral Nerve", ["L2", "L3", "L4"], ["Lateral Circumflex Femoral Artery"], "Foundational");
+vd("Vastus Lateralis", ["Greater Trochanter", "Gluteal Tuberosity", "Lateral Lip of Linea Aspera"], ["Tibial Tuberosity via Patella and Patellar Ligament"], ["Knee Extension"], "Femoral Nerve", ["L2", "L3", "L4"], ["Lateral Circumflex Femoral Artery", "Profunda Femoris Artery"]);
+vd("Vastus Medialis", ["Intertrochanteric Line", "Medial Lip of Linea Aspera"], ["Tibial Tuberosity via Patella and Patellar Ligament"], ["Knee Extension", "Patellar Stabilization"], "Femoral Nerve", ["L2", "L3", "L4"], ["Femoral Artery", "Profunda Femoris Artery"]);
+vd("Vastus Intermedius", ["Anterior and Lateral Femoral Shaft"], ["Tibial Tuberosity via Patella and Patellar Ligament"], ["Knee Extension"], "Femoral Nerve", ["L2", "L3", "L4"], ["Lateral Circumflex Femoral Artery"]);
+vd("Adductor Longus", ["Body of Pubis Inferior to Pubic Crest"], ["Middle Third of Linea Aspera"], ["Hip Adduction", "Hip Flexion"], "Anterior Division of Obturator Nerve", ["L2", "L3", "L4"], ["Obturator Artery", "Profunda Femoris Artery"]);
+vd("Adductor Brevis", ["Body and Inferior Ramus of Pubis"], ["Pectineal Line", "Proximal Linea Aspera"], ["Hip Adduction", "Hip Flexion"], "Anterior Division of Obturator Nerve", ["L2", "L3", "L4"], ["Obturator Artery", "Profunda Femoris Artery"]);
+vd("Gracilis", ["Body and Inferior Ramus of Pubis"], ["Superior Medial Tibia"], ["Hip Adduction", "Knee Flexion", "Medial Rotation of Leg"], "Anterior Division of Obturator Nerve", ["L2", "L3"], ["Obturator Artery"]);
+vd("Obturator Externus", ["External Obturator Membrane", "Margins of Obturator Foramen"], ["Trochanteric Fossa of Femur"], ["Hip External Rotation", "Hip Stabilization"], "Posterior Division of Obturator Nerve", ["L3", "L4"], ["Obturator Artery", "Medial Circumflex Femoral Artery"]);
+vd("Semitendinosus", ["Ischial Tuberosity"], ["Superior Medial Tibia"], ["Hip Extension", "Knee Flexion", "Medial Rotation of Leg"], "Tibial Division of Sciatic Nerve", ["L5", "S1", "S2"], ["Perforating Branches of Profunda Femoris Artery"]);
+vd("Semimembranosus", ["Ischial Tuberosity"], ["Posterior Medial Condyle of Tibia"], ["Hip Extension", "Knee Flexion", "Medial Rotation of Leg"], "Tibial Division of Sciatic Nerve", ["L5", "S1", "S2"], ["Perforating Branches of Profunda Femoris Artery"]);
+
+/* Leg and foot */
+vd("Tibialis Anterior", ["Lateral Condyle and Proximal Lateral Tibia", "Interosseous Membrane"], ["Medial Cuneiform", "Base of First Metatarsal"], ["Dorsiflexion", "Foot Inversion"], "Deep Fibular Nerve", ["L4", "L5"], ["Anterior Tibial Artery"], "Foundational");
+vd("Extensor Hallucis Longus", ["Middle Anterior Fibula", "Interosseous Membrane"], ["Base of Distal Phalanx of Great Toe"], ["Great Toe Extension", "Dorsiflexion"], "Deep Fibular Nerve", ["L5", "S1"], ["Anterior Tibial Artery"]);
+vd("Extensor Digitorum Longus", ["Lateral Condyle of Tibia", "Anterior Fibula", "Interosseous Membrane"], ["Middle and Distal Phalanges of Toes 2-5"], ["Toe Extension", "Dorsiflexion"], "Deep Fibular Nerve", ["L5", "S1"], ["Anterior Tibial Artery"]);
+vd("Fibularis Tertius", ["Distal Anterior Fibula", "Interosseous Membrane"], ["Dorsal Base of Fifth Metatarsal"], ["Dorsiflexion", "Foot Eversion"], "Deep Fibular Nerve", ["L5", "S1"], ["Anterior Tibial Artery"]);
+vd("Fibularis Longus", ["Head and Proximal Lateral Fibula"], ["Base of First Metatarsal", "Medial Cuneiform"], ["Foot Eversion", "Plantarflexion", "Arch Support"], "Superficial Fibular Nerve", ["L5", "S1", "S2"], ["Fibular Artery"]);
+vd("Fibularis Brevis", ["Distal Lateral Fibula"], ["Tuberosity of Fifth Metatarsal"], ["Foot Eversion", "Plantarflexion"], "Superficial Fibular Nerve", ["L5", "S1", "S2"], ["Fibular Artery"]);
+vd("Gastrocnemius", ["Posterior Medial and Lateral Femoral Condyles"], ["Calcaneus via Calcaneal Tendon"], ["Plantarflexion", "Knee Flexion"], "Tibial Nerve", ["S1", "S2"], ["Sural Branches of Popliteal Artery"], "Foundational");
+vd("Soleus", ["Posterior Fibular Head and Proximal Fibula", "Soleal Line and Medial Tibia"], ["Calcaneus via Calcaneal Tendon"], ["Plantarflexion", "Postural Stabilization"], "Tibial Nerve", ["S1", "S2"], ["Posterior Tibial Artery", "Fibular Artery"]);
+vd("Plantaris", ["Lateral Supracondylar Line of Femur"], ["Posterior Calcaneus"], ["Plantarflexion", "Knee Flexion"], "Tibial Nerve", ["S1", "S2"], ["Popliteal Artery"] ,"Expert");
+vd("Popliteus", ["Lateral Femoral Condyle", "Lateral Meniscus"], ["Posterior Tibia Superior to Soleal Line"], ["Knee Unlocking", "Knee Flexion"], "Tibial Nerve", ["L4", "L5", "S1"], ["Genicular Branches of Popliteal Artery"]);
+vd("Tibialis Posterior", ["Posterior Tibia and Fibula", "Interosseous Membrane"], ["Navicular Tuberosity", "Cuneiforms", "Cuboid", "Bases of Metatarsals 2-4"], ["Foot Inversion", "Plantarflexion", "Arch Support"], "Tibial Nerve", ["L4", "L5"], ["Posterior Tibial Artery", "Fibular Artery"]);
+vd("Flexor Digitorum Longus", ["Posterior Tibia Inferior to Soleal Line"], ["Distal Phalanges of Toes 2-5"], ["Toe Flexion", "Plantarflexion", "Arch Support"], "Tibial Nerve", ["S2", "S3"], ["Posterior Tibial Artery"]);
+vd("Flexor Hallucis Longus", ["Distal Posterior Fibula", "Interosseous Membrane"], ["Base of Distal Phalanx of Great Toe"], ["Great Toe Flexion", "Plantarflexion", "Arch Support"], "Tibial Nerve", ["S2", "S3"], ["Fibular Artery"]);
+vd("Extensor Digitorum Brevis", ["Superolateral Calcaneus"], ["Extensor Tendons of Toes 2-4"], ["Toe Extension"], "Deep Fibular Nerve", ["L5", "S1"], ["Lateral Tarsal Artery"]);
+vd("Extensor Hallucis Brevis", ["Superolateral Calcaneus"], ["Base of Proximal Phalanx of Great Toe"], ["Great Toe Extension"], "Deep Fibular Nerve", ["L5", "S1"], ["Lateral Tarsal Artery"]);
+vd("Abductor Hallucis", ["Medial Calcaneal Tuberosity", "Flexor Retinaculum", "Plantar Aponeurosis"], ["Medial Base of Proximal Phalanx of Great Toe"], ["Great Toe Abduction", "MTP Flexion"], "Medial Plantar Nerve", ["S2", "S3"], ["Medial Plantar Artery"]);
+vd("Flexor Digitorum Brevis", ["Medial Calcaneal Tuberosity", "Plantar Aponeurosis"], ["Middle Phalanges of Toes 2-5"], ["PIP Flexion of Toes 2-5"], "Medial Plantar Nerve", ["S2", "S3"], ["Medial Plantar Artery"]);
+vd("Abductor Digiti Minimi Foot", ["Calcaneal Tuberosity", "Plantar Aponeurosis"], ["Lateral Base of Proximal Phalanx of Toe 5"], ["Fifth Toe Abduction", "MTP Flexion"], "Lateral Plantar Nerve", ["S2", "S3"], ["Lateral Plantar Artery"]);
+vd("Quadratus Plantae", ["Medial and Lateral Plantar Calcaneus"], ["Tendon of Flexor Digitorum Longus"], ["Assists Toe Flexion"], "Lateral Plantar Nerve", ["S2", "S3"], ["Lateral Plantar Artery"]);
+vd("Flexor Hallucis Brevis", ["Cuboid", "Lateral Cuneiform", "Tibialis Posterior Tendon"], ["Both Sides of Base of Proximal Phalanx of Great Toe"], ["Great Toe MTP Flexion"], "Medial Plantar Nerve", ["S2", "S3"], ["Medial Plantar Artery"]);
+vd("Adductor Hallucis", ["Bases of Metatarsals 2-4", "Plantar Ligaments of MTP Joints 3-5"], ["Lateral Base of Proximal Phalanx of Great Toe"], ["Great Toe Adduction", "Arch Support"], "Deep Branch of Lateral Plantar Nerve", ["S2", "S3"], ["Plantar Arterial Arch"]);
+vd("Flexor Digiti Minimi Brevis Foot", ["Base of Fifth Metatarsal"], ["Base of Proximal Phalanx of Toe 5"], ["Fifth Toe MTP Flexion"], "Superficial Branch of Lateral Plantar Nerve", ["S2", "S3"], ["Lateral Plantar Artery"]);
+
+/* Abdominal and thoracic wall */
+vd("Rectus Abdominis", ["Pubic Symphysis", "Pubic Crest"], ["Xiphoid Process", "Costal Cartilages 5-7"], ["Trunk Flexion", "Abdominal Compression"], "Thoracoabdominal Nerves", ["T6", "T7", "T8", "T9", "T10", "T11", "T12"], ["Superior and Inferior Epigastric Arteries"], "Foundational");
+vd("External Oblique", ["External Surfaces of Ribs 5-12"], ["Linea Alba", "Pubic Tubercle", "Anterior Iliac Crest"], ["Trunk Flexion", "Contralateral Rotation", "Abdominal Compression"], "Thoracoabdominal and Subcostal Nerves", ["T7", "T8", "T9", "T10", "T11", "T12"], ["Lower Posterior Intercostal and Subcostal Arteries"]);
+vd("Internal Oblique", ["Thoracolumbar Fascia", "Anterior Iliac Crest", "Lateral Inguinal Ligament"], ["Ribs 10-12", "Linea Alba", "Pecten Pubis"], ["Trunk Flexion", "Ipsilateral Rotation", "Abdominal Compression"], "Thoracoabdominal Nerves and L1", ["T6", "T7", "T8", "T9", "T10", "T11", "T12", "L1"], ["Lower Posterior Intercostal, Subcostal and Lumbar Arteries"]);
+vd("Transversus Abdominis", ["Internal Costal Cartilages 7-12", "Thoracolumbar Fascia", "Iliac Crest", "Lateral Inguinal Ligament"], ["Linea Alba", "Pubic Crest", "Pecten Pubis"], ["Abdominal Compression", "Trunk Stabilization"], "Thoracoabdominal Nerves and L1", ["T6", "T7", "T8", "T9", "T10", "T11", "T12", "L1"], ["Lower Posterior Intercostal, Subcostal and Lumbar Arteries"]);
+vd("Pyramidalis", ["Pubic Crest", "Pubic Symphysis"], ["Linea Alba"], ["Linea Alba Tension"], "Subcostal Nerve", ["T12"], ["Inferior Epigastric Artery"], "Expert");
+vd("External Intercostals", ["Inferior Border of Rib Above"], ["Superior Border of Rib Below"], ["Rib Elevation", "Inspiration"], "Intercostal Nerves", ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11"], ["Anterior and Posterior Intercostal Arteries"]);
+vd("Internal Intercostals", ["Floor of Costal Groove of Rib Above"], ["Superior Border of Rib Below"], ["Rib Depression", "Forced Expiration"], "Intercostal Nerves", ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11"], ["Anterior and Posterior Intercostal Arteries"]);
+vd("Innermost Intercostals", ["Internal Surface of Rib Above"], ["Internal Surface of Rib Below"], ["Assists Internal Intercostals"], "Intercostal Nerves", ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11"], ["Intercostal Arteries"]);
+vd("Transversus Thoracis", ["Posterior Sternum", "Xiphoid Process"], ["Internal Surfaces of Costal Cartilages 2-6"], ["Weak Rib Depression"], "Intercostal Nerves", ["T2", "T3", "T4", "T5", "T6"], ["Internal Thoracic Artery"]);
+vd("Subcostals", ["Internal Surface of Lower Ribs Near Angles"], ["Internal Surface of Ribs Two or Three Levels Below"], ["Rib Depression"], "Intercostal Nerves", ["T7", "T8", "T9", "T10", "T11"], ["Posterior Intercostal Arteries"]);
+
+/* Neck */
+vd("Anterior Scalene", ["Anterior Tubercles of Transverse Processes C3-C6"], ["Scalene Tubercle of First Rib"], ["Neck Flexion", "Lateral Flexion", "First Rib Elevation"], "Anterior Rami of Cervical Spinal Nerves", ["C4", "C5", "C6"], ["Ascending Cervical Artery"]);
+vd("Middle Scalene", ["Posterior Tubercles of Transverse Processes C2-C7"], ["Superior Surface of First Rib"], ["Lateral Flexion", "First Rib Elevation"], "Anterior Rami of Cervical Spinal Nerves", ["C3", "C4", "C5", "C6", "C7", "C8"], ["Ascending Cervical Artery"]);
+vd("Posterior Scalene", ["Posterior Tubercles of Transverse Processes C4-C6"], ["External Surface of Second Rib"], ["Lateral Flexion", "Second Rib Elevation"], "Anterior Rami of Cervical Spinal Nerves", ["C6", "C7", "C8"], ["Ascending Cervical Artery"]);
+vd("Longus Capitis", ["Anterior Tubercles of Transverse Processes C3-C6"], ["Basilar Occipital Bone"], ["Head Flexion"], "Anterior Rami of Cervical Spinal Nerves", ["C1", "C2", "C3"], ["Ascending Cervical and Vertebral Arteries"]);
+vd("Longus Colli", ["Bodies T1-T3 and C5-C7", "Transverse Processes C3-C5"], ["Bodies C2-C4", "Anterior Tubercle of C1", "Transverse Processes C5-C6"], ["Neck Flexion", "Contralateral Rotation"], "Anterior Rami of Cervical Spinal Nerves", ["C2", "C3", "C4", "C5", "C6"], ["Ascending Cervical and Vertebral Arteries"]);
+vd("Splenius Capitis", ["Ligamentum Nuchae", "Spinous Processes C7-T3"], ["Mastoid Process", "Lateral Superior Nuchal Line"], ["Head Extension", "Ipsilateral Rotation", "Lateral Flexion"], "Posterior Rami of Cervical Spinal Nerves", ["C3", "C4", "C5"], ["Occipital and Deep Cervical Arteries"]);
+vd("Splenius Cervicis", ["Spinous Processes T3-T6"], ["Transverse Processes C1-C3"], ["Neck Extension", "Ipsilateral Rotation", "Lateral Flexion"], "Posterior Rami of Cervical Spinal Nerves", ["C5", "C6", "C7", "C8"], ["Deep Cervical Artery"]);
+
+/* Facial expression */
+vd("Frontalis", ["Epicranial Aponeurosis"], ["Skin of Eyebrows and Forehead"], ["Eyebrow Elevation", "Forehead Wrinkling"], "Facial Nerve", ["CN VII"], ["Supraorbital and Supratrochlear Arteries"]);
+vd("Occipitalis", ["Lateral Superior Nuchal Line", "Mastoid Process"], ["Epicranial Aponeurosis"], ["Scalp Retraction"], "Facial Nerve", ["CN VII"], ["Occipital Artery"]);
+vd("Orbicularis Oculi", ["Medial Orbital Margin", "Medial Palpebral Ligament", "Lacrimal Bone"], ["Skin Around Orbit", "Tarsal Plates"], ["Eyelid Closure"], "Facial Nerve", ["CN VII"], ["Facial and Ophthalmic Artery Branches"]);
+vd("Corrugator Supercilii", ["Medial Superciliary Arch"], ["Skin of Medial Eyebrow"], ["Eyebrow Depression", "Medial Eyebrow Draw"], "Facial Nerve", ["CN VII"], ["Supraorbital and Supratrochlear Arteries"]);
+vd("Procerus", ["Nasal Bone", "Upper Lateral Nasal Cartilage"], ["Skin of Lower Forehead"], ["Medial Eyebrow Depression", "Nasal Wrinkling"], "Facial Nerve", ["CN VII"], ["Facial and Ophthalmic Artery Branches"]);
+vd("Nasalis", ["Maxilla"], ["Nasal Cartilage and Aponeurosis"], ["Nostril Compression", "Nostril Dilation"], "Facial Nerve", ["CN VII"], ["Facial Artery"]);
+vd("Orbicularis Oris", ["Maxilla", "Mandible", "Modiolus"], ["Skin and Mucosa of Lips"], ["Lip Closure", "Lip Protrusion"], "Facial Nerve", ["CN VII"], ["Superior and Inferior Labial Arteries"]);
+vd("Buccinator", ["Alveolar Processes of Maxilla and Mandible", "Pterygomandibular Raphe"], ["Modiolus", "Orbicularis Oris"], ["Cheek Compression"], "Facial Nerve", ["CN VII"], ["Buccal Artery"]);
+vd("Zygomaticus Major", ["Zygomatic Bone"], ["Modiolus at Angle of Mouth"], ["Angle of Mouth Elevation"], "Facial Nerve", ["CN VII"], ["Facial Artery"]);
+vd("Zygomaticus Minor", ["Zygomatic Bone"], ["Upper Lip"], ["Upper Lip Elevation"], "Facial Nerve", ["CN VII"], ["Facial Artery"]);
+vd("Levator Labii Superioris", ["Infraorbital Margin of Maxilla"], ["Upper Lip"], ["Upper Lip Elevation"], "Facial Nerve", ["CN VII"], ["Facial and Infraorbital Arteries"]);
+vd("Levator Anguli Oris", ["Canine Fossa of Maxilla"], ["Modiolus at Angle of Mouth"], ["Angle of Mouth Elevation"], "Facial Nerve", ["CN VII"], ["Facial Artery"]);
+vd("Risorius", ["Parotid and Masseteric Fascia"], ["Modiolus at Angle of Mouth"], ["Angle of Mouth Retraction"], "Facial Nerve", ["CN VII"], ["Facial Artery"]);
+vd("Depressor Anguli Oris", ["Oblique Line of Mandible"], ["Modiolus at Angle of Mouth"], ["Angle of Mouth Depression"], "Facial Nerve", ["CN VII"], ["Facial Artery"]);
+vd("Depressor Labii Inferioris", ["Oblique Line of Mandible"], ["Lower Lip"], ["Lower Lip Depression"], "Facial Nerve", ["CN VII"], ["Inferior Labial Artery"]);
+vd("Mentalis", ["Incisive Fossa of Mandible"], ["Skin of Chin"], ["Lower Lip Protrusion", "Chin Wrinkling"], "Facial Nerve", ["CN VII"], ["Inferior Labial and Mental Arteries"]);
+vd("Platysma", ["Fascia over Pectoralis Major and Deltoid"], ["Inferior Mandible", "Skin of Lower Face"], ["Neck Skin Tension", "Mandible Depression"], "Facial Nerve", ["CN VII"], ["Submental and Suprascapular Arteries"]);
+
+/* Mastication and suprahyoid/infrahyoid */
+vd("Masseter", ["Zygomatic Arch"], ["Lateral Ramus and Angle of Mandible"], ["Jaw Elevation", "Jaw Protrusion"], "Masseteric Nerve", ["CN V3"], ["Masseteric Artery"]);
+vd("Temporalis", ["Temporal Fossa", "Temporal Fascia"], ["Coronoid Process and Anterior Ramus of Mandible"], ["Jaw Elevation", "Jaw Retraction"], "Deep Temporal Nerves", ["CN V3"], ["Deep Temporal Arteries"]);
+vd("Medial Pterygoid", ["Medial Surface of Lateral Pterygoid Plate", "Maxillary Tuberosity"], ["Medial Ramus and Angle of Mandible"], ["Jaw Elevation", "Jaw Protrusion", "Contralateral Excursion"], "Nerve to Medial Pterygoid", ["CN V3"], ["Pterygoid Branches of Maxillary Artery"]);
+vd("Lateral Pterygoid", ["Greater Wing of Sphenoid", "Lateral Surface of Lateral Pterygoid Plate"], ["Neck of Mandible", "TMJ Capsule and Articular Disc"], ["Jaw Protrusion", "Jaw Depression", "Contralateral Excursion"], "Nerve to Lateral Pterygoid", ["CN V3"], ["Pterygoid Branches of Maxillary Artery"]);
+vd("Mylohyoid", ["Mylohyoid Line of Mandible"], ["Median Raphe", "Hyoid Bone"], ["Hyoid Elevation", "Floor of Mouth Elevation"], "Nerve to Mylohyoid", ["CN V3"], ["Sublingual and Submental Arteries"]);
+vd("Anterior Belly of Digastric", ["Digastric Fossa of Mandible"], ["Intermediate Tendon to Hyoid"], ["Hyoid Elevation", "Mandible Depression"], "Nerve to Mylohyoid", ["CN V3"], ["Submental Artery"]);
+vd("Stylohyoid", ["Styloid Process"], ["Hyoid Body"], ["Hyoid Elevation", "Hyoid Retraction"], "Facial Nerve", ["CN VII"], ["Facial and Occipital Arteries"]);
+vd("Posterior Belly of Digastric", ["Mastoid Notch of Temporal Bone"], ["Intermediate Tendon to Hyoid"], ["Hyoid Elevation", "Mandible Depression"], "Facial Nerve", ["CN VII"], ["Occipital and Posterior Auricular Arteries"]);
+vd("Sternohyoid", ["Manubrium", "Medial Clavicle"], ["Hyoid Body"], ["Hyoid Depression"], "Ansa Cervicalis", ["C1", "C2", "C3"], ["Superior Thyroid Artery"]);
+vd("Omohyoid", ["Superior Border of Scapula"], ["Hyoid Body"], ["Hyoid Depression", "Hyoid Stabilization"], "Ansa Cervicalis", ["C1", "C2", "C3"], ["Superior Thyroid Artery"]);
+vd("Sternothyroid", ["Posterior Manubrium"], ["Oblique Line of Thyroid Cartilage"], ["Larynx Depression"], "Ansa Cervicalis", ["C2", "C3"], ["Superior and Inferior Thyroid Arteries"]);
+vd("Thyrohyoid", ["Oblique Line of Thyroid Cartilage"], ["Hyoid Body and Greater Horn"], ["Hyoid Depression", "Larynx Elevation"], "C1 Fibers through Hypoglossal Nerve", ["C1"], ["Superior Thyroid Artery"]);
+
+Object.keys(verifiedData).forEach(function(name) {
+    const muscle = muscles.find(function(item) { return item.name === name; });
+    if (!muscle) return;
+    const data = verifiedData[name];
+    muscle.origin = data.origin;
+    muscle.insertion = data.insertion;
+    muscle.actions = data.actions;
+    muscle.innervation = data.innervation;
+    muscle.roots = data.roots;
+    muscle.bloodSupply = data.bloodSupply;
+    muscle.difficulty = data.difficulty;
+    muscle.reviewed = true;
+    muscle.targetEligible = true;
+    if (!muscle.clinical || muscle.clinical.includes("will be added")) {
+        muscle.clinical = "Reviewed gross-anatomy record; clinical correlation intentionally omitted pending a dedicated clinical review.";
+    }
+    if (!muscle.studyNote || muscle.studyNote.includes("Review the relationship")) {
+        muscle.studyNote = "Use the specific attachments, innervation, and primary actions shown above to distinguish this muscle.";
+    }
+});
+
+
+/* RESTORED GROUPED AND SPECIALIZED MUSCLES: VERIFIED CORE DATA */
+const restoredMuscleData = {
+"Adductor Pollicis": {o:["Capitate and Bases of Metacarpals 2-3","Anterior Shaft of Third Metacarpal"],i:["Medial Base of Proximal Phalanx of Thumb"],a:["Thumb Adduction","Thumb MCP Flexion"],n:"Deep Branch of Ulnar Nerve",r:["C8","T1"],b:["Deep Palmar Arch"]},
+"Lumbricals 1-2 of Hand": {o:["Lateral Sides of Flexor Digitorum Profundus Tendons to Digits 2-3"],i:["Lateral Extensor Expansions of Digits 2-3"],a:["MCP Flexion","IP Extension"],n:"Median Nerve",r:["C8","T1"],b:["Superficial and Deep Palmar Arches"]},
+"Lumbricals 3-4 of Hand": {o:["Adjacent Sides of Flexor Digitorum Profundus Tendons to Digits 3-5"],i:["Lateral Extensor Expansions of Digits 4-5"],a:["MCP Flexion","IP Extension"],n:"Deep Branch of Ulnar Nerve",r:["C8","T1"],b:["Deep Palmar Arch"]},
+"Palmar Interossei of Hand": {o:["Palmar Surfaces of Metacarpals 2, 4, and 5"],i:["Bases of Proximal Phalanges and Extensor Expansions of Digits 2, 4, and 5"],a:["Finger Adduction","MCP Flexion","IP Extension"],n:"Deep Branch of Ulnar Nerve",r:["C8","T1"],b:["Deep Palmar Arch","Palmar Metacarpal Arteries"]},
+"Dorsal Interossei of Hand": {o:["Adjacent Sides of Metacarpals"],i:["Bases of Proximal Phalanges and Extensor Expansions of Digits 2-4"],a:["Finger Abduction","MCP Flexion","IP Extension"],n:"Deep Branch of Ulnar Nerve",r:["C8","T1"],b:["Deep Palmar Arch","Dorsal Metacarpal Arteries"]},
+"Gluteus Maximus": {o:["Posterior Ilium","Dorsal Sacrum and Coccyx","Sacrotuberous Ligament"],i:["Iliotibial Tract","Gluteal Tuberosity"],a:["Hip Extension","Hip External Rotation"],n:"Inferior Gluteal Nerve",r:["L5","S1","S2"],b:["Inferior Gluteal Artery","Superior Gluteal Artery"]},
+"Piriformis": {o:["Anterior Surface of Sacrum"],i:["Superior Border of Greater Trochanter"],a:["Hip External Rotation","Hip Abduction","Hip Stabilization"],n:"Nerve to Piriformis",r:["S1","S2"],b:["Superior and Inferior Gluteal Arteries"]},
+"Obturator Internus": {o:["Pelvic Surface of Obturator Membrane","Surrounding Pelvic Bone"],i:["Medial Surface of Greater Trochanter"],a:["Hip External Rotation","Hip Abduction","Hip Stabilization"],n:"Nerve to Obturator Internus",r:["L5","S1","S2"],b:["Internal Pudendal Artery","Inferior Gluteal Artery"]},
+"Gemelli": {o:["Superior Gemellus: Ischial Spine","Inferior Gemellus: Ischial Tuberosity"],i:["Obturator Internus Tendon to Medial Greater Trochanter"],a:["Hip External Rotation","Hip Abduction","Hip Stabilization"],n:"Nerves to Obturator Internus and Quadratus Femoris",r:["L4","L5","S1","S2"],b:["Inferior Gluteal Artery","Internal Pudendal Artery"]},
+"Quadratus Femoris": {o:["Lateral Border of Ischial Tuberosity"],i:["Quadrate Tubercle and Adjacent Intertrochanteric Crest"],a:["Hip External Rotation","Hip Adduction","Hip Stabilization"],n:"Nerve to Quadratus Femoris",r:["L4","L5","S1"],b:["Medial Circumflex Femoral Artery","Inferior Gluteal Artery"]},
+"Sartorius": {o:["Anterior Superior Iliac Spine"],i:["Superior Medial Tibia at Pes Anserinus"],a:["Hip Flexion","Hip Abduction","Hip External Rotation","Knee Flexion","Medial Rotation of Leg"],n:"Femoral Nerve",r:["L2","L3"],b:["Femoral Artery"]},
+"Iliacus": {o:["Iliac Fossa","Iliac Crest","Ala of Sacrum"],i:["Lesser Trochanter through Iliopsoas Tendon"],a:["Hip Flexion","Hip Stabilization"],n:"Femoral Nerve",r:["L1","L2","L3"],b:["Iliolumbar Artery","Medial Circumflex Femoral Artery"]},
+"Psoas Major": {o:["Bodies, Discs, and Transverse Processes T12-L5"],i:["Lesser Trochanter through Iliopsoas Tendon"],a:["Hip Flexion","Trunk Flexion","Lumbar Stabilization"],n:"Anterior Rami of Lumbar Nerves",r:["L1","L2","L3"],b:["Iliolumbar and Lumbar Arteries"]},
+"Adductor Magnus": {o:["Inferior Pubic Ramus","Ischial Ramus","Ischial Tuberosity"],i:["Gluteal Tuberosity","Linea Aspera","Medial Supracondylar Line","Adductor Tubercle"],a:["Hip Adduction","Hip Flexion","Hip Extension"],n:"Posterior Division of Obturator Nerve and Tibial Division of Sciatic Nerve",r:["L2","L3","L4"],b:["Obturator Artery","Perforating Branches of Profunda Femoris Artery"]},
+"Biceps Femoris": {o:["Long Head: Ischial Tuberosity","Short Head: Linea Aspera and Lateral Supracondylar Line"],i:["Head of Fibula"],a:["Knee Flexion","Lateral Rotation of Leg","Hip Extension"],n:"Tibial and Common Fibular Divisions of Sciatic Nerve",r:["L5","S1","S2"],b:["Perforating Branches of Profunda Femoris Artery","Inferior Gluteal Artery"]},
+"Plantar Interossei of Foot": {o:["Medial Sides of Metatarsals 3-5"],i:["Medial Bases of Proximal Phalanges and Extensor Expansions of Toes 3-5"],a:["Toe Adduction","MTP Flexion","IP Extension"],n:"Deep Branch of Lateral Plantar Nerve",r:["S2","S3"],b:["Plantar Metatarsal Arteries from Plantar Arch"]},
+"Dorsal Interossei of Foot": {o:["Adjacent Sides of Metatarsals"],i:["First to Medial Side of Second Toe; Others to Lateral Sides of Toes 2-4"],a:["Toe Abduction","MTP Flexion","IP Extension"],n:"Deep Branch of Lateral Plantar Nerve",r:["S2","S3"],b:["Dorsal and Plantar Metatarsal Arteries"]},
+"Iliocostalis": {o:["Common Erector Spinae Tendon","Lower Ribs"],i:["Angles of Ribs","Cervical Transverse Processes"],a:["Spinal Extension","Lateral Flexion"],n:"Posterior Rami of Spinal Nerves",r:["Segmental"],b:["Deep Cervical, Posterior Intercostal, Subcostal, and Lumbar Arteries"]},
+"Longissimus": {o:["Common Erector Spinae Tendon","Transverse Processes"],i:["Ribs","Thoracic and Cervical Transverse Processes","Mastoid Process"],a:["Spinal Extension","Lateral Flexion","Ipsilateral Head Rotation"],n:"Posterior Rami of Spinal Nerves",r:["Segmental"],b:["Deep Cervical, Posterior Intercostal, Subcostal, and Lumbar Arteries"]},
+"Spinalis": {o:["Lower Thoracic and Upper Lumbar Spinous Processes"],i:["Upper Thoracic and Cervical Spinous Processes"],a:["Spinal Extension"],n:"Posterior Rami of Spinal Nerves",r:["Segmental"],b:["Posterior Intercostal and Lumbar Arteries"]},
+"Semispinalis": {o:["Transverse Processes of Upper Thoracic and Lower Cervical Vertebrae"],i:["Occipital Bone","Spinous Processes Four to Six Levels Superior"],a:["Spinal Extension","Head Extension","Contralateral Rotation"],n:"Posterior Rami of Spinal Nerves",r:["Segmental"],b:["Deep Cervical, Occipital, and Posterior Intercostal Arteries"]},
+"Multifidus": {o:["Sacrum","Posterior Superior Iliac Spine","Mammillary and Transverse Processes"],i:["Spinous Processes Two to Four Levels Superior"],a:["Spinal Stabilization","Spinal Extension","Contralateral Rotation"],n:"Posterior Rami of Spinal Nerves",r:["Segmental"],b:["Posterior Intercostal, Lumbar, Iliolumbar, and Lateral Sacral Arteries"]},
+"Rotatores": {o:["Transverse Processes"],i:["Lamina and Spinous Processes One to Two Levels Superior"],a:["Spinal Stabilization","Contralateral Rotation","Proprioception"],n:"Posterior Rami of Spinal Nerves",r:["Segmental"],b:["Posterior Intercostal and Lumbar Arteries"]},
+"Geniohyoid": {o:["Inferior Mental Spine of Mandible"],i:["Body of Hyoid"],a:["Hyoid Elevation","Mandible Depression"],n:"C1 Fibers through Hypoglossal Nerve",r:["C1"],b:["Sublingual Artery"]},
+"Levator Ani": {o:["Body of Pubis","Tendinous Arch of Obturator Fascia","Ischial Spine"],i:["Perineal Body","Walls of Pelvic Viscera","Anococcygeal Raphe","Coccyx"],a:["Pelvic Organ Support","Pelvic Floor Elevation","Continence"],n:"Nerve to Levator Ani with Pudendal Contributions",r:["S2","S3","S4"],b:["Internal Pudendal and Inferior Gluteal Arteries"]},
+"Coccygeus": {o:["Ischial Spine","Sacrospinous Ligament"],i:["Lateral Lower Sacrum and Coccyx"],a:["Pelvic Organ Support","Coccyx Flexion"],n:"Anterior Rami of Sacral Nerves",r:["S4","S5"],b:["Inferior Gluteal and Internal Pudendal Arteries"]},
+"External Anal Sphincter": {o:["Perineal Body and Surrounding Fascial Attachments"],i:["Anococcygeal Ligament and Fibers Encircling Anal Canal"],a:["Anal Canal Closure","Fecal Continence"],n:"Inferior Rectal Nerve with S4 Contribution",r:["S2","S3","S4"],b:["Inferior Rectal Artery"]},
+"External Urethral Sphincter": {o:["Perineal Membrane and Surrounding Fascial Attachments"],i:["Fibers Encircling Membranous Urethra"],a:["Urethral Closure","Urinary Continence"],n:"Deep Perineal Branch of Pudendal Nerve",r:["S2","S3","S4"],b:["Internal Pudendal Artery"]}
+};
+
+Object.keys(restoredMuscleData).forEach(function(name) {
+    const muscle = muscles.find(function(item) { return item.name === name; });
+    if (!muscle) return;
+    const d = restoredMuscleData[name];
+    muscle.origin = d.o;
+    muscle.insertion = d.i;
+    muscle.actions = d.a;
+    muscle.innervation = d.n;
+    muscle.roots = d.r;
+    muscle.bloodSupply = d.b;
+    muscle.reviewed = true;
+    muscle.targetEligible = true;
+    muscle.clinical = muscle.clinical && !muscle.clinical.includes("will be added")
+        ? muscle.clinical
+        : "Reviewed anatomy record; grouped and variant anatomy is summarized for gameplay.";
+    muscle.studyNote = "This record uses a grouped or specialized attachment model where appropriate.";
+});
+
+/*
+==========================================
+PART 6: DIFFICULTY AND ELIGIBILITY
+==========================================
+*/
+const difficultyRanks = { Foundational: 1, Standard: 2, Expert: 3 };
+function getDifficultyRank(difficulty) { return difficultyRanks[difficulty] || difficultyRanks.Standard; }
+function containsPlaceholderText(muscle) {
+    const values = [].concat(muscle.origin || []).concat(muscle.insertion || []);
+    return values.some(function(value) {
+        const n = normalize(value);
+        return n.endsWith(" origin") || n.endsWith(" insertion") || n.includes("various") || n.includes("not available");
+    });
+}
+function sortedNormalizedArray(values) {
+    return Array.isArray(values) ? values.map(normalize).sort() : [];
+}
+function createClueSignature(muscle) {
+    return JSON.stringify({
+        region: normalize(muscle.region), compartment: normalize(muscle.compartment),
+        actions: sortedNormalizedArray(muscle.actions), innervation: normalize(muscle.innervation),
+        roots: sortedNormalizedArray(muscle.roots), origin: sortedNormalizedArray(muscle.origin),
+        insertion: sortedNormalizedArray(muscle.insertion)
+    });
+}
+function findDuplicateMuscleNames() {
+    const groups = new Map();
+    muscles.forEach(function(m) { const k=normalize(m.name); if(!groups.has(k)) groups.set(k,[]); groups.get(k).push(m.name); });
+    const out=[]; groups.forEach(function(names,k){ if(names.length>1) out.push({normalizedName:k,names:names}); }); return out;
+}
+function findClueCollisions(list) {
+    const groups=new Map(); list.forEach(function(m){const k=createClueSignature(m);if(!groups.has(k))groups.set(k,[]);groups.get(k).push(m);});
+    const out=[]; groups.forEach(function(ms,k){if(ms.length>1)out.push({signature:k,muscles:ms});}); return out;
+}
+function getCollisionNameSet(list) { const names=new Set(); findClueCollisions(list).forEach(function(c){c.muscles.forEach(function(m){names.add(m.name);});}); return names; }
+function isMuscleEligibleForDifficulty(muscle, selectedDifficulty) {
+    if(muscle.targetEligible===false) return false;
+    if(getDifficultyRank(muscle.difficulty)>getDifficultyRank(selectedDifficulty)) return false;
+    if(selectedDifficulty!=="Expert" && containsPlaceholderText(muscle)) return false;
+    return true;
+}
+function removeUnfairCollisions(list,difficulty) {
+    if(difficulty==="Expert") return list;
+    const names=getCollisionNameSet(list); return list.filter(function(m){return !names.has(m.name);});
+}
+function runMuscleDataAudit() {
+    const report={total:muscles.length,duplicateNames:findDuplicateMuscleNames(),collisions:findClueCollisions(muscles),placeholderMuscles:muscles.filter(containsPlaceholderText),unreviewedMuscles:muscles.filter(function(m){return m.reviewed!==true;})};
+    console.group("Muscledle Data Audit"); console.log("Total records:",report.total); console.log("Duplicate names:",report.duplicateNames); console.log("Identical clue collisions:",report.collisions.map(function(c){return c.muscles.map(function(m){return m.name;});})); console.log("Placeholder records:",report.placeholderMuscles.map(function(m){return m.name;})); console.log("Unreviewed records:",report.unreviewedMuscles.map(function(m){return m.name;})); console.groupEnd(); return report;
+}
+
+/* PART 6C: CONDITIONAL ANATOMICAL COMPASS */
+const segmentProfiles = {
+    "Scapular Region": ["Upper Limb","Shoulder",1], "Rotator Cuff": ["Upper Limb","Shoulder",1],
+    "Shoulder": ["Upper Limb","Shoulder",1], "Anterior Shoulder": ["Upper Limb","Shoulder",1], "Posterior Shoulder": ["Upper Limb","Shoulder",1],
+    "Anterior Arm": ["Upper Limb","Arm",2], "Posterior Arm": ["Upper Limb","Arm",2],
+    "Anterior Forearm": ["Upper Limb","Forearm",3], "Posterior Forearm": ["Upper Limb","Forearm",3],
+    "Thenar Hand": ["Upper Limb","Hand",4], "Hypothenar Hand": ["Upper Limb","Hand",4], "Central Hand": ["Upper Limb","Hand",4], "Deep Hand": ["Upper Limb","Hand",4],
+    "Gluteal Region": ["Lower Limb","Hip",1], "Deep Gluteal Region": ["Lower Limb","Hip",1], "Anterior Hip": ["Lower Limb","Hip",1],
+    "Anterior Thigh": ["Lower Limb","Thigh",2], "Medial Thigh": ["Lower Limb","Thigh",2], "Posterior Thigh": ["Lower Limb","Thigh",2],
+    "Anterior Leg": ["Lower Limb","Leg",3], "Lateral Leg": ["Lower Limb","Leg",3], "Superficial Posterior Leg": ["Lower Limb","Leg",3], "Deep Posterior Leg": ["Lower Limb","Leg",3],
+    "Dorsal Foot": ["Lower Limb","Foot",4], "Plantar Foot": ["Lower Limb","Foot",4]
+};
+const surfaceProfiles = {
+    "Anterior Shoulder":"Anterior", "Posterior Shoulder":"Posterior", "Anterior Arm":"Anterior", "Posterior Arm":"Posterior",
+    "Anterior Forearm":"Anterior", "Posterior Forearm":"Posterior", "Anterior Hip":"Anterior", "Anterior Thigh":"Anterior",
+    "Posterior Thigh":"Posterior", "Anterior Leg":"Anterior", "Superficial Posterior Leg":"Posterior", "Deep Posterior Leg":"Posterior",
+    "Dorsal Foot":"Dorsal", "Plantar Foot":"Plantar"
+};
+const depthProfiles = {
+    "Rotator Cuff":2,"Scapular Region":1,"Anterior Arm":1,"Posterior Arm":1,"Anterior Forearm":1,"Posterior Forearm":1,
+    "Thenar Hand":1,"Hypothenar Hand":1,"Central Hand":2,"Deep Hand":3,"Gluteal Region":1,"Deep Gluteal Region":3,
+    "Anterior Thigh":1,"Medial Thigh":1,"Posterior Thigh":1,"Anterior Leg":1,"Lateral Leg":1,"Superficial Posterior Leg":1,"Deep Posterior Leg":3,
+    "Dorsal Foot":1,"Plantar Foot":2,"Erector Spinae":1,"Transversospinalis":3
+};
+const medialLateralProfiles = {"Medial Thigh":1,"Lateral Leg":3,"Thenar Hand":3,"Hypothenar Hand":1};
+const jointMap = {
+    "Shoulder Flexion":"Shoulder","Shoulder Extension":"Shoulder","Shoulder Abduction":"Shoulder","Shoulder Adduction":"Shoulder","Shoulder Internal Rotation":"Shoulder","Shoulder External Rotation":"Shoulder",
+    "Elbow Flexion":"Elbow","Elbow Extension":"Elbow","Forearm Pronation":"Radioulnar","Forearm Supination":"Radioulnar","Wrist Flexion":"Wrist","Wrist Extension":"Wrist","Wrist Abduction":"Wrist","Wrist Adduction":"Wrist",
+    "Hip Flexion":"Hip","Hip Extension":"Hip","Hip Abduction":"Hip","Hip Adduction":"Hip","Hip Internal Rotation":"Hip","Hip External Rotation":"Hip","Knee Flexion":"Knee","Knee Extension":"Knee","Dorsiflexion":"Ankle","Plantarflexion":"Ankle"
+};
+const boneTerms = ["Scapula","Humerus","Radius","Ulna","Clavicle","Metacarpal","Phalanx","Femur","Tibia","Fibula","Patella","Calcaneus","Sacrum","Ilium","Pubis","Ischium","Rib","Vertebra","Coccyx","Hyoid","Mandible"];
+function inferBones(values){const found=[];(values||[]).forEach(function(v){boneTerms.forEach(function(b){if(normalize(v).includes(normalize(b))&&!found.includes(b))found.push(b);});});return found;}
+function enrichDirectionalMetadata(m) {
+    const p=segmentProfiles[m.compartment];
+    m.locationChain=p?p[0]:m.region; m.segment=p?p[1]:m.compartment; m.segmentLevel=p?p[2]:null;
+    m.surface=surfaceProfiles[m.compartment]||"Not comparable"; m.depthLevel=depthProfiles[m.compartment]||null; m.medialLateralLevel=medialLateralProfiles[m.compartment]||2;
+    m.joints=[]; (m.actions||[]).forEach(function(a){Object.keys(jointMap).forEach(function(k){if(normalize(a).includes(normalize(k))&&!m.joints.includes(jointMap[k]))m.joints.push(jointMap[k]);});});
+    m.jointCount=m.joints.length; m.originBones=inferBones(m.origin); m.insertionBones=inferBones(m.insertion);
+}
+muscles.forEach(enrichDirectionalMetadata);
+let usedCompassHintTypes = new Set();
+function sameComparableSegment(a,b){return a.locationChain===b.locationChain && a.segment===b.segment;}
+function buildCompassHints(guess,target){
+    const hints=[];
+    if(sameComparableSegment(guess,target) && guess.surface!=="Not comparable" && target.surface!=="Not comparable") {
+        hints.push({type:"surface", text:guess.surface===target.surface?"Same surface: "+target.surface:"Target is on the "+target.surface.toLowerCase()+" side", detail:"Anterior / posterior orientation"});
+    }
+    if(sameComparableSegment(guess,target) && guess.depthLevel!==null && target.depthLevel!==null) {
+        hints.push({type:"depth", text:target.depthLevel>guess.depthLevel?"Target is deeper":target.depthLevel<guess.depthLevel?"Target is more superficial":"Same general depth", detail:"Regional muscle-belly layer"});
+    }
+    if(sameComparableSegment(guess,target) && guess.medialLateralLevel && target.medialLateralLevel) {
+        hints.push({type:"medialLateral", text:target.medialLateralLevel>guess.medialLateralLevel?"Target is more lateral":target.medialLateralLevel<guess.medialLateralLevel?"Target is more medial":"Similar medial-lateral position", detail:"Loose regional direction"});
+    }
+    if(guess.jointCount>0 && target.jointCount>0) {
+        hints.push({type:"jointCount", text:target.jointCount>guess.jointCount?"Target acts across more major joints":target.jointCount<guess.jointCount?"Target acts across fewer major joints":"Same major-joint count", detail:"Guess: "+guess.jointCount+" | Target: "+target.jointCount});
+    }
+    const sharedOrigin=guess.originBones.filter(function(b){return target.originBones.includes(b);});
+    const sharedInsertion=guess.insertionBones.filter(function(b){return target.insertionBones.includes(b);});
+    if(sharedOrigin.length||sharedInsertion.length) {
+        hints.push({type:"attachmentBones", text:sharedOrigin.length?"Shares origin bone: "+sharedOrigin.join(", "):"Shares insertion bone: "+sharedInsertion.join(", "), detail:"Attachment-bone proximity"});
+    }
+    if(guess.locationChain===target.locationChain && guess.segmentLevel!==null && target.segmentLevel!==null) {
+        const d=Math.abs(target.segmentLevel-guess.segmentLevel);
+        hints.push({type:"compartmentDistance", text:d===0?(guess.compartment===target.compartment?"Exact location group":"Same segment, different location group"):(d===1?"Adjacent segment":"Different segment, "+d+" levels away"), detail:d===0?guess.segment:(target.segmentLevel<guess.segmentLevel?"Move more proximal":"Move more distal")});
+    }
+    return hints;
+}
+function chooseCompassHint(guess,target){
+    const applicable=buildCompassHints(guess,target);
+    if(!applicable.length) return {color:"gray",hint:"No comparable directional hint",text:"Not comparable"};
+    let unused=applicable.filter(function(h){return !usedCompassHintTypes.has(h.type);});
+    if(!unused.length) unused=applicable;
+    const chosen=unused[Math.floor(Math.random()*unused.length)]; usedCompassHintTypes.add(chosen.type);
+    return {color:"yellow",hint:chosen.detail,text:chosen.text};
+}
+function addCompassCell(row,result){
+    const cell=document.createElement("td"); cell.className="compass-cell "+result.color;
+    const main=document.createElement("span"); main.className="cell-main"; main.textContent=result.text; cell.appendChild(main);
+    const hint=document.createElement("span"); hint.className="cell-hint"; hint.textContent=result.hint; cell.appendChild(hint); row.appendChild(cell);
+}
+
+const input =
+document.getElementById("guessInput");
+
+const guessButton =
+document.getElementById("guessButton");
+
+const newGameButton =
+document.getElementById("newGameButton");
+
+const suggestions =
+document.getElementById("suggestions");
+
+const mobilePicker =
+document.getElementById("mobilePicker");
+
+const mobilePickerList =
+document.getElementById("mobilePickerList");
+
+const mobilePickerQuery =
+document.getElementById("mobilePickerQuery");
+
+const closeMobilePickerButton =
+document.getElementById("closeMobilePicker");
+
+const results =
+document.getElementById("results");
+
+const message =
+document.getElementById("message");
+
+const guessCounter =
+document.getElementById("guessCounter");
+
+const gameNumberDisplay =
+document.getElementById("gameNumber");
+
+
+const gameModeSelect =
+document.getElementById(
+"gameMode"
+);
+
+const regionFilterSelect =
+document.getElementById(
+"regionFilter"
+);
+
+
+
+const difficultyFilterSelect =
+document.getElementById(
+"difficultyFilter"
+);
+
+const difficultyIndicator =
+document.getElementById(
+"difficultyIndicator"
+);
+
+const modeIndicator =
+document.getElementById(
+"modeIndicator"
+);
+
+const statsButton =
+document.getElementById(
+"statsButton"
+);
+
+const statsPanel =
+document.getElementById(
+"statsPanel"
+);
+
+const closeStatsButton =
+document.getElementById(
+"closeStatsButton"
+);
+
+const resetStatsButton =
+document.getElementById(
+"resetStatsButton"
+);
+
+const gamesPlayedStat =
+document.getElementById(
+"gamesPlayedStat"
+);
+
+const gamesWonStat =
+document.getElementById(
+"gamesWonStat"
+);
+
+const winPercentageStat =
+document.getElementById(
+"winPercentageStat"
+);
+
+const currentStreakStat =
+document.getElementById(
+"currentStreakStat"
+);
+
+const longestStreakStat =
+document.getElementById(
+"longestStreakStat"
+);
+
+const guessDistribution =
+document.getElementById(
+"guessDistribution"
+);
+
+const dailyStatsMessage =
+document.getElementById(
+"dailyStatsMessage"
+);
+
+
+
+const studyButton =
+document.getElementById(
+"studyButton"
+);
+
+const shareButton =
+document.getElementById(
+"shareButton"
+);
+
+const shareFeedback =
+document.getElementById(
+"shareFeedback"
+);
+
+const studyPanel =
+document.getElementById(
+"studyPanel"
+);
+
+const closeStudyButton =
+document.getElementById(
+"closeStudyButton"
+);
+
+const studyMuscleName =
+document.getElementById(
+"studyMuscleName"
+);
+
+const studyRegion =
+document.getElementById(
+"studyRegion"
+);
+
+const studyCompartment =
+document.getElementById(
+"studyCompartment"
+);
+
+const studyDifficulty =
+document.getElementById(
+"studyDifficulty"
+);
+
+const studyActions =
+document.getElementById(
+"studyActions"
+);
+
+const studyInnervation =
+document.getElementById(
+"studyInnervation"
+);
+
+const studyRoots =
+document.getElementById(
+"studyRoots"
+);
+
+const studyOrigin =
+document.getElementById(
+"studyOrigin"
+);
+
+const studyInsertion =
+document.getElementById(
+"studyInsertion"
+);
+
+const studyBloodSupply =
+document.getElementById(
+"studyBloodSupply"
+);
+
+const studyClinical =
+document.getElementById(
+"studyClinical"
+);
+
+const studyNote =
+document.getElementById(
+"studyNote"
+);
+
+let target = null;
+
+let guessesRemaining = 6;
+
+let gameOver = false;
+
+
+let currentGameRecorded =
+false;
+
+let currentDailyKey =
+"";
+
+let currentGameMode =
+"random";
+
+let gameNumber = 0;
+
+let previousTargetName = "";
+
+const guessedMuscles =
+new Set();
+
+let completedShareText = "";
+let currentMuscleMood = "";
+
+function normalize(value) {
+return String(value)
+.trim()
+.toLowerCase();
+}
+
+/*
+==========================================
+PART 3: ADVANCED ANATOMICAL MATCHING ENGINE
+==========================================
+*/
+
+function arraysEqual(
+firstArray,
+secondArray
+) {
+if (
+firstArray.length !==
+secondArray.length
+) {
+return false;
+}
+
+const secondSet =
+new Set(
+secondArray.map(normalize)
+);
+
+return firstArray.every(
+function (item) {
+return secondSet.has(
+normalize(item)
+);
+}
+);
+}
+
+function getOverlap(
+firstArray,
+secondArray
+) {
+const secondSet =
+new Set(
+secondArray.map(normalize)
+);
+
+return firstArray.filter(
+function (item) {
+return secondSet.has(
+normalize(item)
+);
+}
+);
+}
+
+function arraysOverlap(
+firstArray,
+secondArray
+) {
+return getOverlap(
+firstArray,
+secondArray
+).length > 0;
+}
+
+const actionFamilies = {
+flexion: [
+"Elbow Flexion",
+"Shoulder Flexion",
+"Wrist Flexion",
+"Finger Flexion",
+"Thumb Flexion",
+"MCP Flexion",
+"IP Flexion",
+"Hip Flexion",
+"Knee Flexion",
+"Toe Flexion",
+"Trunk Flexion",
+"Neck Flexion",
+"Lateral Flexion",
+"PIP Flexion of Digits 2-5",
+"DIP Flexion of Digits 2-5",
+"MCP Flexion of Digits 2-5",
+"Thumb IP Flexion",
+"Thumb MCP Flexion"
+],
+
+extension: [
+"Elbow Extension",
+"Shoulder Extension",
+"Wrist Extension",
+"Finger Extension",
+"Digit Extension",
+"Thumb Extension",
+"MCP Extension",
+"IP Extension",
+"Hip Extension",
+"Knee Extension",
+"Toe Extension",
+"Spinal Extension",
+"Neck Extension",
+"MCP Extension of Digits 2-5",
+"IP Extension of Digits 2-5",
+"Little Finger MCP Extension",
+"Little Finger IP Extension",
+"Thumb MCP Extension",
+"Thumb IP Extension",
+"Thumb CMC Extension",
+"Index Finger MCP Extension",
+"Index Finger IP Extension"
+],
+
+abduction: [
+"Shoulder Abduction",
+"Hip Abduction",
+"Finger Abduction",
+"Thumb Abduction",
+"Toe Abduction",
+"Wrist Abduction",
+"Thumb CMC Abduction"
+],
+
+adduction: [
+"Shoulder Adduction",
+"Hip Adduction",
+"Finger Adduction",
+"Thumb Adduction",
+"Toe Adduction",
+"Wrist Adduction"
+],
+
+internalRotation: [
+"Shoulder Internal Rotation",
+"Hip Internal Rotation"
+],
+
+externalRotation: [
+"Shoulder External Rotation",
+"Hip External Rotation"
+],
+
+pronation: [
+"Forearm Pronation"
+],
+
+supination: [
+"Forearm Supination"
+],
+
+dorsiflexion: [
+"Dorsiflexion"
+],
+
+plantarflexion: [
+"Plantarflexion"
+],
+
+inversion: [
+"Foot Inversion"
+],
+
+eversion: [
+"Foot Eversion"
+],
+
+stabilization: [
+"Shoulder Stabilization",
+"Scapular Stabilization",
+"Elbow Stabilization",
+"Hip Stabilization",
+"Spinal Stabilization",
+"Pelvic Organ Support",
+"Distal Radioulnar Joint Stabilization"
+],
+
+respiration: [
+"Respiration",
+"Inspiration",
+"Rib Movement",
+"Rib Elevation"
+],
+
+facial: [
+"Facial Expression"
+],
+
+mastication: [
+"Jaw Movement",
+"Mastication"
+],
+
+swallowing: [
+"Hyoid Elevation",
+"Hyoid Depression",
+"Swallowing",
+"Larynx Movement"
+],
+
+wristAbduction: [
+"Wrist Abduction"
+],
+
+wristAdduction: [
+"Wrist Adduction"
+],
+
+palmarTension: [
+"Palmar Aponeurosis Tension"
+],
+
+forearmNeutral: [
+"Forearm Return to Neutral"
+],
+
+
+scapularElevation: [
+"Scapular Elevation"
+],
+
+scapularDepression: [
+"Scapular Depression"
+],
+
+scapularRetraction: [
+"Scapular Retraction"
+],
+
+scapularProtraction: [
+"Scapular Protraction"
+],
+
+upwardScapularRotation: [
+"Upward Scapular Rotation"
+],
+
+downwardScapularRotation: [
+"Downward Scapular Rotation"
+]
+
+};
+
+const opposingActionFamilies = {
+flexion: "extension",
+extension: "flexion",
+
+abduction: "adduction",
+adduction: "abduction",
+
+internalRotation: "externalRotation",
+externalRotation: "internalRotation",
+
+pronation: "supination",
+supination: "pronation",
+
+dorsiflexion: "plantarflexion",
+plantarflexion: "dorsiflexion",
+
+inversion: "eversion",
+eversion: "inversion",
+
+wristAbduction: "wristAdduction",
+wristAdduction: "wristAbduction",
+
+
+scapularElevation: "scapularDepression",
+scapularDepression: "scapularElevation",
+
+scapularRetraction: "scapularProtraction",
+scapularProtraction: "scapularRetraction",
+
+upwardScapularRotation: "downwardScapularRotation",
+downwardScapularRotation: "upwardScapularRotation"
+};
+
+function getActionFamilies(
+actions
+) {
+const foundFamilies = [];
+
+Object.keys(
+actionFamilies
+).forEach(
+function (familyName) {
+const familyActions =
+actionFamilies[
+familyName
+];
+
+const belongsToFamily =
+actions.some(
+function (action) {
+return familyActions.some(
+function (
+familyAction
+) {
+return normalize(
+familyAction
+) ===
+normalize(
+action
+);
+}
+);
+}
+);
+
+if (belongsToFamily) {
+foundFamilies.push(
+familyName
+);
+}
+}
+);
+
+return foundFamilies;
+}
+
+function compareActions(
+guessActions,
+targetActions
+) {
+if (
+arraysEqual(
+guessActions,
+targetActions
+)
+) {
+return {
+color: "green",
+hint: "Exact action set"
+};
+}
+
+const exactOverlap =
+getOverlap(
+guessActions,
+targetActions
+);
+
+if (
+exactOverlap.length > 0
+) {
+return {
+color: "yellow",
+hint:
+"Shared action: " +
+exactOverlap.join(", ")
+};
+}
+
+const guessFamilies =
+getActionFamilies(
+guessActions
+);
+
+const targetFamilies =
+getActionFamilies(
+targetActions
+);
+
+const sharedFamilies =
+guessFamilies.filter(
+function (family) {
+return targetFamilies.includes(
+family
+);
+}
+);
+
+if (
+sharedFamilies.length > 0
+) {
+return {
+color: "yellow",
+hint:
+"Related movement family: " +
+formatFamilyName(
+sharedFamilies[0]
+)
+};
+}
+
+for (
+let index = 0;
+index <
+guessFamilies.length;
+index = index + 1
+) {
+const guessFamily =
+guessFamilies[index];
+
+const oppositeFamily =
+opposingActionFamilies[
+guessFamily
+];
+
+if (
+oppositeFamily &&
+targetFamilies.includes(
+oppositeFamily
+)
+) {
+return {
+color: "yellow",
+hint:
+"Opposing movement: " +
+formatFamilyName(
+guessFamily
+) +
+" versus " +
+formatFamilyName(
+oppositeFamily
+)
+};
+}
+}
+
+return {
+color: "gray",
+hint: "Different action pattern"
+};
+}
+
+function formatFamilyName(
+familyName
+) {
+return familyName
+.replace(
+/([A-Z])/g,
+" $1"
+)
+.replace(
+/^./,
+function (letter) {
+return letter.toUpperCase();
+}
+);
+}
+const nerveRelationshipGroups = {
+brachialTerminal: [
+"Axillary Nerve",
+"Musculocutaneous Nerve",
+"Median Nerve",
+"Anterior Interosseous Nerve",
+"Anterior Interosseous and Ulnar Nerves",
+"Ulnar Nerve",
+"Radial Nerve",
+"Deep Branch of Radial Nerve",
+"Posterior Interosseous Nerve"
+],
+
+brachialCollateral: [
+"Suprascapular Nerve",
+"Thoracodorsal Nerve",
+"Upper Subscapular Nerve",
+"Lower Subscapular Nerve",
+"Subscapular Nerves",
+"Dorsal Scapular Nerve",
+"Long Thoracic Nerve",
+"Medial Pectoral Nerve",
+"Lateral Pectoral Nerve",
+"Medial and Lateral Pectoral Nerves",
+"Scapular Region Nerves"
+],
+
+lumbar: [
+"Femoral Nerve",
+"Obturator Nerve",
+"Anterior Rami of Lumbar Nerves"
+],
+
+sacral: [
+"Sciatic Nerve",
+"Tibial Division of Sciatic Nerve",
+"Tibial Nerve",
+"Deep Fibular Nerve",
+"Superficial Fibular Nerve",
+"Inferior Gluteal Nerve",
+"Superior Gluteal Nerve",
+"Sacral Plexus Branches",
+"Pudendal and Sacral Nerves",
+"Medial or Lateral Plantar Nerve",
+"Lateral Plantar Nerve",
+"Nerve to Piriformis",
+"Nerve to Obturator Internus",
+"Nerve to Quadratus Femoris",
+"Nerves to Obturator Internus and Quadratus Femoris",
+"Nerve to Levator Ani",
+"Inferior Rectal Nerve",
+"Deep Perineal Branch of Pudendal Nerve"
+],
+
+facial: [
+"Facial Nerve"
+],
+
+trigeminal: [
+"Mandibular Division of Trigeminal Nerve"
+],
+
+cervical: [
+"Ansa Cervicalis",
+"Cervical Spinal Nerves",
+"Phrenic Nerve",
+"C1 Fibers through Hypoglossal Nerve"
+],
+
+posteriorRami: [
+"Posterior Rami of Spinal Nerves",
+"Posterior Rami of Cervical Nerves"
+],
+
+thoracic: [
+"Thoracoabdominal Nerves",
+"Intercostal Nerves"
+]
+};
+
+
+function findNerveGroup(
+nerveName
+) {
+const groupNames =
+Object.keys(
+nerveRelationshipGroups
+);
+
+for (
+let index = 0;
+index <
+groupNames.length;
+index = index + 1
+) {
+const groupName =
+groupNames[index];
+
+const group =
+nerveRelationshipGroups[
+groupName
+];
+
+const found =
+group.some(
+function (nerve) {
+return normalize(
+nerve
+) ===
+normalize(
+nerveName
+);
+}
+);
+
+if (found) {
+return groupName;
+}
+}
+
+return "";
+}
+
+function compareNerves(
+guess,
+target
+) {
+if (
+normalize(
+guess.innervation
+) ===
+normalize(
+target.innervation
+)
+) {
+return {
+color: "green",
+hint: "Exact nerve"
+};
+}
+
+const guessGroup =
+findNerveGroup(
+guess.innervation
+);
+
+const targetGroup =
+findNerveGroup(
+target.innervation
+);
+
+if (
+guessGroup !== "" &&
+guessGroup === targetGroup
+) {
+return {
+color: "yellow",
+hint:
+"Related nerve group: " +
+formatFamilyName(
+guessGroup
+)
+};
+}
+
+if (
+guess.nerveFamily ===
+target.nerveFamily
+) {
+return {
+color: "yellow",
+hint:
+"Same neural family: " +
+guess.nerveFamily
+};
+}
+
+return {
+color: "gray",
+hint: "Different nerve family"
+};
+}
+
+const regionRelationships = {
+"Upper Limb": [
+"Upper Limb"
+],
+
+"Lower Limb": [
+"Lower Limb"
+],
+
+"Head and Neck": [
+"Head and Neck"
+],
+
+"Trunk": [
+"Trunk",
+"Back"
+],
+
+"Back": [
+"Back",
+"Trunk"
+],
+
+"Pelvis": [
+"Pelvis",
+"Trunk"
+]
+};
+
+function compareRegions(
+guessRegion,
+targetRegion
+) {
+if (
+guessRegion ===
+targetRegion
+) {
+return {
+color: "green",
+hint: "Exact region"
+};
+}
+
+const relatedRegions =
+regionRelationships[
+guessRegion
+] || [];
+
+if (
+relatedRegions.includes(
+targetRegion
+)
+) {
+return {
+color: "yellow",
+hint: "Adjacent body region"
+};
+}
+
+return {
+color: "gray",
+hint: "Different body region"
+};
+}
+
+const compartmentGroups = {
+shoulder: [
+"Shoulder",
+"Rotator Cuff",
+"Scapular Region",
+"Anterior Shoulder",
+"Posterior Shoulder"
+],
+
+arm: [
+"Anterior Arm",
+"Posterior Arm"
+],
+
+forearm: [
+"Anterior Forearm",
+"Posterior Forearm"
+],
+
+hand: [
+"Thenar Hand",
+"Hypothenar Hand",
+"Central Hand",
+"Deep Hand"
+],
+
+hip: [
+"Gluteal Region",
+"Deep Gluteal Region",
+"Anterior Hip"
+],
+
+thigh: [
+"Anterior Thigh",
+"Medial Thigh",
+"Posterior Thigh"
+],
+
+leg: [
+"Anterior Leg",
+"Lateral Leg",
+"Superficial Posterior Leg",
+"Deep Posterior Leg"
+],
+
+foot: [
+"Dorsal Foot",
+"Plantar Foot"
+],
+
+abdominal: [
+"Abdominal Wall",
+"Thoracoabdominal Boundary"
+],
+
+thoracic: [
+"Thoracic Wall",
+"Thoracoabdominal Boundary"
+],
+
+back: [
+"Erector Spinae",
+"Transversospinalis"
+],
+
+neck: [
+"Anterior Neck",
+"Posterior Neck",
+"Deep Neck",
+"Suprahyoid",
+"Infrahyoid"
+],
+
+face: [
+"Facial Expression",
+"Mastication"
+],
+
+pelvic: [
+"Pelvic Floor"
+]
+};
+
+function findCompartmentGroup(
+compartment
+) {
+const groupNames =
+Object.keys(
+compartmentGroups
+);
+
+for (
+let index = 0;
+index <
+groupNames.length;
+index = index + 1
+) {
+const groupName =
+groupNames[index];
+
+if (
+compartmentGroups[
+groupName
+].includes(
+compartment
+)
+) {
+return groupName;
+}
+}
+
+return "";
+}
+
+function getCompartmentLocation(compartment) {
+    const profiles = {
+        "Scapular Region": { chain: "Upper Limb", segment: "Shoulder", level: 1, surface: "Mixed" },
+        "Rotator Cuff": { chain: "Upper Limb", segment: "Shoulder", level: 1, surface: "Deep" },
+        "Shoulder": { chain: "Upper Limb", segment: "Shoulder", level: 1, surface: "Mixed" },
+        "Anterior Shoulder": { chain: "Upper Limb", segment: "Shoulder", level: 1, surface: "Anterior" },
+        "Posterior Shoulder": { chain: "Upper Limb", segment: "Shoulder", level: 1, surface: "Posterior" },
+        "Anterior Arm": { chain: "Upper Limb", segment: "Arm", level: 2, surface: "Anterior" },
+        "Posterior Arm": { chain: "Upper Limb", segment: "Arm", level: 2, surface: "Posterior" },
+        "Anterior Forearm": { chain: "Upper Limb", segment: "Forearm", level: 3, surface: "Anterior" },
+        "Posterior Forearm": { chain: "Upper Limb", segment: "Forearm", level: 3, surface: "Posterior" },
+        "Thenar Hand": { chain: "Upper Limb", segment: "Hand", level: 4, surface: "Palmar" },
+        "Hypothenar Hand": { chain: "Upper Limb", segment: "Hand", level: 4, surface: "Palmar" },
+        "Central Hand": { chain: "Upper Limb", segment: "Hand", level: 4, surface: "Palmar" },
+        "Deep Hand": { chain: "Upper Limb", segment: "Hand", level: 4, surface: "Deep" },
+        "Gluteal Region": { chain: "Lower Limb", segment: "Hip", level: 1, surface: "Posterior" },
+        "Deep Gluteal Region": { chain: "Lower Limb", segment: "Hip", level: 1, surface: "Deep" },
+        "Anterior Hip": { chain: "Lower Limb", segment: "Hip", level: 1, surface: "Anterior" },
+        "Anterior Thigh": { chain: "Lower Limb", segment: "Thigh", level: 2, surface: "Anterior" },
+        "Medial Thigh": { chain: "Lower Limb", segment: "Thigh", level: 2, surface: "Medial" },
+        "Posterior Thigh": { chain: "Lower Limb", segment: "Thigh", level: 2, surface: "Posterior" },
+        "Anterior Leg": { chain: "Lower Limb", segment: "Leg", level: 3, surface: "Anterior" },
+        "Lateral Leg": { chain: "Lower Limb", segment: "Leg", level: 3, surface: "Lateral" },
+        "Superficial Posterior Leg": { chain: "Lower Limb", segment: "Leg", level: 3, surface: "Posterior" },
+        "Deep Posterior Leg": { chain: "Lower Limb", segment: "Leg", level: 3, surface: "Posterior" },
+        "Dorsal Foot": { chain: "Lower Limb", segment: "Foot", level: 4, surface: "Dorsal" },
+        "Plantar Foot": { chain: "Lower Limb", segment: "Foot", level: 4, surface: "Plantar" }
+    };
+
+    return profiles[compartment] || null;
+}
+
+function compareCompartments(guessCompartment, targetCompartment) {
+    if (guessCompartment === targetCompartment) {
+        return {
+            color: "green",
+            hint: "Exact location group"
+        };
+    }
+
+    const guessLocation = getCompartmentLocation(guessCompartment);
+    const targetLocation = getCompartmentLocation(targetCompartment);
+
+    if (!guessLocation || !targetLocation) {
+        const guessGroup = findCompartmentGroup(guessCompartment);
+        const targetGroup = findCompartmentGroup(targetCompartment);
+
+        if (guessGroup !== "" && guessGroup === targetGroup) {
+            return {
+                color: "yellow",
+                hint: "Same general anatomical group"
+            };
+        }
+
+        return {
+            color: "gray",
+            hint: "Different location group"
+        };
+    }
+
+    if (guessLocation.chain !== targetLocation.chain) {
+        return {
+            color: "gray",
+            hint: "Different body region"
+        };
+    }
+
+    const segmentDistance = Math.abs(
+        guessLocation.level - targetLocation.level
+    );
+
+    if (segmentDistance === 0) {
+        return {
+            color: "yellow",
+            hint: "Same segment, different location group"
+        };
+    }
+
+    if (segmentDistance === 1) {
+        return {
+            color: "yellow",
+            hint: "Adjacent segment"
+        };
+    }
+
+    return {
+        color: "gray",
+        hint: "Same limb, distant segment"
+    };
+}
+
+const cranialNerveLevels = {
+  "CN I": 0,
+  "CN II": 0,
+  "CN III": 0,
+  "CN IV": 0,
+  "CN V": 0,
+  "CN V1": 0,
+  "CN V2": 0,
+  "CN V3": 0,
+  "CN VI": 0,
+  "CN VII": 0,
+  "CN VIII": 0,
+  "CN IX": 0,
+  "CN X": 0,
+  "CN XI": 0,
+  "CN XII": 0
+};
+
+const spinalLevelOrder = {
+"C1": 1,
+"C2": 2,
+"C3": 3,
+"C4": 4,
+"C5": 5,
+"C6": 6,
+"C7": 7,
+"C8": 8,
+
+"T1": 9,
+"T2": 10,
+"T3": 11,
+"T4": 12,
+"T5": 13,
+"T6": 14,
+"T7": 15,
+"T8": 16,
+"T9": 17,
+"T10": 18,
+"T11": 19,
+"T12": 20,
+
+"L1": 21,
+"L2": 22,
+"L3": 23,
+"L4": 24,
+"L5": 25,
+
+"S1": 26,
+"S2": 27,
+"S3": 28,
+"S4": 29,
+"S5": 30
+};
+
+function isSpinalRoot(root) {
+  return Object.prototype.hasOwnProperty.call(spinalLevelOrder, root);
+}
+
+function averageRootLevel(roots) {
+  const recognizedLevels = roots
+    .map(function (root) {
+      if (Object.prototype.hasOwnProperty.call(cranialNerveLevels, root)) {
+        return cranialNerveLevels[root];
+      }
+      if (Object.prototype.hasOwnProperty.call(spinalLevelOrder, root)) {
+        return spinalLevelOrder[root];
+      }
+      return null;
+    })
+    .filter(function (level) {
+      return level !== null;
+    });
+
+  if (recognizedLevels.length === 0) {
+    return null;
+  }
+
+  return recognizedLevels.reduce(function (total, level) {
+    return total + level;
+  }, 0) / recognizedLevels.length;
+}
+
+function compareRoots(guessRoots, targetRoots) {
+  if (arraysEqual(guessRoots, targetRoots)) {
+    return {
+      color: "green",
+      arrow: "",
+      hint: "Exact neural level set",
+      percent: 100
+    };
+  }
+
+  const overlap = getOverlap(guessRoots, targetRoots);
+  const largestSet = Math.max(guessRoots.length, targetRoots.length);
+  const overlapPercent = largestSet === 0
+    ? 0
+    : Math.round((overlap.length / largestSet) * 100);
+  const guessAverage = averageRootLevel(guessRoots);
+  const targetAverage = averageRootLevel(targetRoots);
+  let arrow = "";
+  let directionText = "";
+
+  if (guessAverage !== null && targetAverage !== null) {
+    if (targetAverage < guessAverage) {
+      arrow = "↑";
+      directionText = "Target neural level is higher";
+    } else if (targetAverage > guessAverage) {
+      arrow = "↓";
+      directionText = "Target neural level is lower";
+    } else {
+      arrow = "↔";
+      directionText = "Similar average neural level";
+    }
+  }
+
+  if (overlap.length > 0) {
+    return {
+      color: "yellow",
+      arrow: arrow,
+      hint: "Shared: " + overlap.join(", ") + (directionText ? ". " + directionText : ""),
+      percent: overlapPercent
+    };
+  }
+
+  return {
+    color: "gray",
+    arrow: arrow,
+    hint: directionText || "No shared recognized neural levels",
+    percent: 0
+  };
+}
+
+function compareAttachments(
+guessAttachments,
+targetAttachments,
+attachmentType
+) {
+if (
+arraysEqual(
+guessAttachments,
+targetAttachments
+)
+) {
+return {
+color: "green",
+hint:
+"Exact " +
+attachmentType
+};
+}
+
+const overlap =
+getOverlap(
+guessAttachments,
+targetAttachments
+);
+
+if (
+overlap.length > 0
+) {
+return {
+color: "yellow",
+hint:
+"Shared attachment: " +
+overlap.join(", ")
+};
+}
+
+return {
+color: "gray",
+hint:
+"Different " +
+attachmentType
+};
+}
+
+/*
+==========================================
+PART 4: GAME MODES AND TARGET SELECTION
+==========================================
+*/
+
+function getEligibleMuscles() {
+const selectedRegion =
+regionFilterSelect.value;
+
+const selectedDifficulty =
+difficultyFilterSelect.value;
+
+let eligibleMuscles =
+muscles.slice();
+
+if (
+selectedRegion !==
+"All"
+) {
+eligibleMuscles =
+eligibleMuscles.filter(
+function (muscle) {
+return (
+muscle.region ===
+selectedRegion
+);
+}
+);
+}
+
+eligibleMuscles =
+eligibleMuscles.filter(
+function (muscle) {
+return (
+isMuscleEligibleForDifficulty(
+muscle,
+selectedDifficulty
+)
+);
+}
+);
+
+eligibleMuscles =
+removeUnfairCollisions(
+eligibleMuscles,
+selectedDifficulty
+);
+
+return eligibleMuscles;
+}
+
+function createStringHash(text) {
+let hash = 2166136261;
+
+for (
+let index = 0;
+index < text.length;
+index += 1
+) {
+hash ^=
+text.charCodeAt(index);
+
+hash =
+Math.imul(
+hash,
+16777619
+);
+}
+
+return hash >>> 0;
+}
+
+const dailyReleaseId =
+"muscledle-verified-155-release-3";
+
+function getDailyTargetPool() {
+    return muscles
+        .filter(
+            function (muscle) {
+                return (
+                    muscle.targetEligible !== false &&
+                    muscle.reviewed === true &&
+                    !containsPlaceholderText(muscle)
+                );
+            }
+        )
+        .slice()
+        .sort(
+            function (firstMuscle, secondMuscle) {
+                return firstMuscle.name.localeCompare(
+                    secondMuscle.name
+                );
+            }
+        );
+}
+
+function chooseDailyTarget() {
+    const dailyPool =
+        getDailyTargetPool();
+
+    if (dailyPool.length === 0) {
+        return null;
+    }
+
+    const dailyIndex =
+        createStringHash(
+            dailyReleaseId +
+            "|" +
+            getLocalDateKey()
+        ) %
+        dailyPool.length;
+
+    return dailyPool[
+        dailyIndex
+    ];
+}
+
+function chooseRandomTarget() {
+    currentGameMode =
+        gameModeSelect.value;
+
+    currentDailyKey =
+        getDailyGameKey();
+
+    if (
+        currentGameMode ===
+        "daily"
+    ) {
+        return chooseDailyTarget();
+    }
+
+    let eligibleMuscles =
+        getEligibleMuscles();
+
+    if (
+        eligibleMuscles.length ===
+        0
+    ) {
+        return null;
+    }
+
+    let randomChoices =
+        eligibleMuscles.filter(
+            function (muscle) {
+                return (
+                    muscle.name !==
+                    previousTargetName
+                );
+            }
+        );
+
+    if (
+        randomChoices.length ===
+        0
+    ) {
+        randomChoices =
+            eligibleMuscles;
+    }
+
+    const randomIndex =
+        Math.floor(
+            Math.random() *
+            randomChoices.length
+        );
+
+    return randomChoices[
+        randomIndex
+    ];
+}
+
+function updateCounter() {
+guessCounter.textContent =
+"Guesses remaining: " +
+guessesRemaining;
+}
+
+function closeSuggestions() {
+  suggestions.innerHTML = "";
+  suggestions.classList.remove("mobile-suggestions");
+  suggestions.style.top = "";
+  suggestions.style.left = "";
+  suggestions.style.width = "";
+  input.setAttribute("aria-expanded", "false");
+
+  mobilePickerList.innerHTML = "";
+  mobilePicker.classList.add("hidden");
+  document.body.classList.remove("mobile-picker-open");
+}
+
+function enableGame() {
+input.disabled = false;
+
+guessButton.disabled =
+false;
+}
+
+function disableGame() {
+input.disabled = true;
+
+guessButton.disabled =
+true;
+}
+function updateModeControls() {
+    const dailyMode =
+        gameModeSelect.value ===
+        "daily";
+
+    regionFilterSelect.disabled =
+        dailyMode;
+
+    difficultyFilterSelect.disabled =
+        dailyMode;
+
+    shareButton.classList.toggle(
+        "hidden",
+        !dailyMode
+    );
+
+    if (dailyMode) {
+        regionFilterSelect.value =
+            "All";
+    } else {
+        shareButton.disabled = true;
+        shareButton.classList.remove(
+            "share-ready"
+        );
+        completedShareText = "";
+        currentMuscleMood = "";
+        shareFeedback.textContent = "";
+    }
+}
+
+function newGame() {
+updateModeControls();
+
+target =
+chooseRandomTarget();
+
+if (!target) {
+gameOver = true;
+
+results.innerHTML = "";
+
+input.value = "";
+
+closeSuggestions();
+
+disableGame();
+
+studyButton.disabled = true;
+
+message.textContent =
+"No eligible targets are available for this category and difficulty. Choose a broader category or a higher difficulty.";
+
+gameNumberDisplay.textContent =
+"No Available Game";
+
+modeIndicator.textContent =
+gameModeSelect.value ===
+"daily"
+? "Daily Challenge"
+: "Random Practice";
+
+difficultyIndicator.textContent =
+difficultyFilterSelect.value;
+
+return;
+}
+
+previousTargetName =
+target.name;
+
+guessesRemaining = 6;
+
+gameOver = false;
+
+answerDisplayed = false;
+completedShareText = "";
+currentMuscleMood = "";
+shareButton.disabled = true;
+shareButton.classList.remove("share-ready");
+shareFeedback.textContent = "";
+
+
+studyButton.disabled = true;
+
+studyPanel.classList.add(
+"hidden"
+);
+
+currentGameRecorded = false;
+
+gameNumber =
+gameNumber + 1;
+
+guessedMuscles.clear();
+
+usedCompassHintTypes.clear();
+
+results.innerHTML = "";
+
+message.textContent = "";
+
+input.value = "";
+
+closeSuggestions();
+
+enableGame();
+
+updateCounter();
+
+
+difficultyIndicator.textContent =
+difficultyFilterSelect.value;
+
+if (
+currentGameMode ===
+"daily"
+) {
+gameNumberDisplay.textContent =
+"Daily Challenge";
+
+modeIndicator.textContent =
+"Universal Daily Muscle";
+
+difficultyIndicator.textContent =
+"Daily";
+
+const completedDaily =
+statistics
+.completedDailyGames[
+currentDailyKey
+];
+
+if (completedDaily) {
+message.textContent =
+"You already completed today's Daily Challenge. You may replay it, but it will not affect your statistics.";
+}
+} else {
+gameNumberDisplay.textContent =
+"Practice Game " +
+gameNumber;
+
+modeIndicator.textContent =
+"Random Practice";
+
+difficultyIndicator.textContent =
+difficultyFilterSelect.value;
+}
+
+input.focus();
+
+console.log(
+"Muscledle answer:",
+target.name
+);
+}
+
+
+function addAdvancedCell(
+row,
+mainText,
+result
+) {
+const cell =
+document.createElement(
+"td"
+);
+
+cell.className =
+result.color;
+
+const main =
+document.createElement(
+"span"
+);
+
+main.className =
+"cell-main";
+
+main.textContent =
+mainText;
+
+if (
+result.arrow
+) {
+const arrow =
+document.createElement(
+"span"
+);
+
+arrow.className =
+"root-arrow";
+
+arrow.textContent =
+result.arrow;
+
+main.appendChild(
+arrow
+);
+}
+
+cell.appendChild(
+main
+);
+
+if (
+result.hint
+) {
+const hint =
+document.createElement(
+"span"
+);
+
+hint.className =
+"cell-hint";
+
+hint.textContent =
+result.hint;
+
+cell.appendChild(
+hint
+);
+}
+
+if (
+typeof result.percent ===
+"number" &&
+result.percent > 0 &&
+result.percent < 100
+) {
+const percent =
+document.createElement(
+"span"
+);
+
+percent.className =
+"match-percent";
+
+percent.textContent =
+result.percent +
+"% root overlap";
+
+cell.appendChild(
+percent
+);
+}
+
+row.appendChild(
+cell
+);
+}
+
+
+
+let answerDisplayed = false;
+
+function createAnswerCell(
+row,
+text,
+labelText
+) {
+const cell =
+document.createElement("td");
+
+cell.className = "green";
+
+if (labelText) {
+const label =
+document.createElement("span");
+
+label.className =
+"answer-label";
+
+label.textContent =
+labelText;
+
+cell.appendChild(label);
+}
+
+const main =
+document.createElement("span");
+
+main.className =
+"cell-main";
+
+main.textContent =
+text;
+
+cell.appendChild(main);
+
+row.appendChild(cell);
+}
+
+
+
+/*
+==========================================
+PART 5: STUDY CARD FUNCTIONS
+==========================================
+*/
+
+function fillStudyList(
+listElement,
+values
+) {
+listElement.innerHTML = "";
+
+const safeValues =
+Array.isArray(values) &&
+values.length > 0
+? values
+: ["Not available"];
+
+safeValues.forEach(
+function (value) {
+const item =
+document.createElement(
+"li"
+);
+
+item.textContent =
+value;
+
+listElement.appendChild(
+item
+);
+}
+);
+}
+
+function renderStudyCard(
+muscle
+) {
+if (!muscle) {
+return;
+}
+
+studyMuscleName.textContent =
+muscle.name;
+
+studyRegion.textContent =
+muscle.region ||
+"Not available";
+
+studyCompartment.textContent =
+muscle.compartment ||
+"Not available";
+
+studyDifficulty.textContent =
+muscle.difficulty ||
+"Standard";
+
+fillStudyList(
+studyActions,
+muscle.actions
+);
+
+studyInnervation.textContent =
+muscle.innervation ||
+"Not available";
+
+studyRoots.textContent =
+Array.isArray(
+muscle.roots
+)
+? muscle.roots.join(", ")
+: "Not available";
+
+fillStudyList(
+studyOrigin,
+muscle.origin
+);
+
+fillStudyList(
+studyInsertion,
+muscle.insertion
+);
+
+fillStudyList(
+studyBloodSupply,
+muscle.bloodSupply
+);
+
+studyClinical.textContent =
+muscle.clinical ||
+"Not available";
+
+studyNote.textContent =
+muscle.studyNote ||
+"Review the relationship among this muscle's attachments and actions.";
+}
+
+function openStudyCard() {
+if (!gameOver || !target) {
+message.textContent =
+"Complete the game before opening the target Study Card.";
+
+return;
+}
+
+renderStudyCard(
+target
+);
+
+studyPanel.classList.remove(
+"hidden"
+);
+
+statsPanel.classList.add(
+"hidden"
+);
+
+studyPanel.scrollIntoView({
+behavior: "smooth",
+block: "start"
+});
+}
+
+function closeStudyCard() {
+studyPanel.classList.add(
+"hidden"
+);
+}
+
+function revealCorrectAnswer() {
+if (answerDisplayed) {
+return;
+}
+
+answerDisplayed = true;
+
+const answerRow =
+document.createElement("tr");
+
+answerRow.className =
+"answer-row";
+
+createAnswerCell(
+answerRow,
+target.name,
+"Correct Answer"
+);
+
+createAnswerCell(
+answerRow,
+target.region,
+""
+);
+
+createAnswerCell(
+answerRow,
+target.compartment,
+""
+);
+
+createAnswerCell(
+answerRow,
+target.actions.join(", "),
+""
+);
+
+createAnswerCell(
+answerRow,
+target.innervation,
+""
+);
+
+createAnswerCell(
+answerRow,
+target.roots.join(", "),
+""
+);
+
+createAnswerCell(
+answerRow,
+target.origin.join(", "),
+""
+);
+
+createAnswerCell(
+answerRow,
+target.insertion.join(", "),
+""
+);
+
+createAnswerCell(
+    answerRow,
+    "Target location revealed",
+    "Anatomical Compass"
+);
+
+results.appendChild(answerRow);
+}
+
+function markCorrectGuessRow(
+row
+) {
+row.classList.add(
+"correct-guess-row"
+);
+
+const firstCell =
+row.querySelector("td");
+
+if (!firstCell) {
+return;
+}
+
+const label =
+document.createElement("span");
+
+label.className =
+"answer-label";
+
+label.textContent =
+"Correct Answer";
+
+firstCell.insertBefore(
+label,
+firstCell.firstChild
+);
+}
+
+
+/*
+==========================================
+PART 4: STATISTICS AND PERSISTENCE
+==========================================
+*/
+
+const statisticsStorageKey =
+"muscledleStatisticsV2";
+
+function createDefaultStatistics() {
+return {
+gamesPlayed: 0,
+gamesWon: 0,
+currentStreak: 0,
+longestStreak: 0,
+
+guessDistribution: {
+1: 0,
+2: 0,
+3: 0,
+4: 0,
+5: 0,
+6: 0
+},
+
+completedDailyGames: {}
+};
+}
+
+function loadStatistics() {
+try {
+const savedData =
+localStorage.getItem(
+statisticsStorageKey
+);
+
+if (!savedData) {
+return createDefaultStatistics();
+}
+
+const parsedData =
+JSON.parse(savedData);
+
+const defaultData =
+createDefaultStatistics();
+
+return {
+gamesPlayed:
+Number(
+parsedData.gamesPlayed
+) || 0,
+
+gamesWon:
+Number(
+parsedData.gamesWon
+) || 0,
+
+currentStreak:
+Number(
+parsedData.currentStreak
+) || 0,
+
+longestStreak:
+Number(
+parsedData.longestStreak
+) || 0,
+
+guessDistribution:
+Object.assign(
+{},
+defaultData.guessDistribution,
+parsedData.guessDistribution ||
+{}
+),
+
+completedDailyGames:
+parsedData.completedDailyGames ||
+{}
+};
+} catch (error) {
+console.error(
+"Statistics could not be loaded:",
+error
+);
+
+return createDefaultStatistics();
+}
+}
+
+let statistics =
+loadStatistics();
+
+function storeStatistics() {
+try {
+localStorage.setItem(
+statisticsStorageKey,
+JSON.stringify(
+statistics
+)
+);
+} catch (error) {
+console.error(
+"Statistics could not be saved:",
+error
+);
+}
+}
+
+function getLocalDateKey() {
+const currentDate =
+new Date();
+
+const year =
+currentDate.getFullYear();
+
+const month =
+String(
+currentDate.getMonth() + 1
+).padStart(2, "0");
+
+const day =
+String(
+currentDate.getDate()
+).padStart(2, "0");
+
+return (
+year +
+"-" +
+month +
+"-" +
+day
+);
+}
+
+function getDailyGameKey() {
+    return (
+        dailyReleaseId +
+        "|" +
+        getLocalDateKey()
+    );
+}
+
+function calculateWinPercentage() {
+if (
+statistics.gamesPlayed ===
+0
+) {
+return 0;
+}
+
+return Math.round(
+(
+statistics.gamesWon /
+statistics.gamesPlayed
+) *
+100
+);
+}
+
+function saveCompletedGame(
+won,
+guessNumber
+) {
+if (currentGameRecorded) {
+return;
+}
+
+if (
+currentGameMode ===
+"daily" &&
+statistics.completedDailyGames[
+currentDailyKey
+]
+) {
+currentGameRecorded = true;
+
+renderStatistics();
+
+return;
+}
+
+currentGameRecorded = true;
+
+statistics.gamesPlayed += 1;
+
+if (won) {
+statistics.gamesWon += 1;
+
+statistics.currentStreak += 1;
+
+statistics.longestStreak =
+Math.max(
+statistics.longestStreak,
+statistics.currentStreak
+);
+
+if (
+statistics.guessDistribution[
+guessNumber
+] !== undefined
+) {
+statistics.guessDistribution[
+guessNumber
+] += 1;
+}
+} else {
+statistics.currentStreak = 0;
+}
+
+if (
+currentGameMode ===
+"daily"
+) {
+statistics.completedDailyGames[
+currentDailyKey
+] = {
+won: won,
+guesses: guessNumber,
+target: target.name
+};
+}
+
+storeStatistics();
+
+renderStatistics();
+}
+
+function renderStatistics() {
+gamesPlayedStat.textContent =
+statistics.gamesPlayed;
+
+gamesWonStat.textContent =
+statistics.gamesWon;
+
+winPercentageStat.textContent =
+calculateWinPercentage() +
+"%";
+
+currentStreakStat.textContent =
+statistics.currentStreak;
+
+longestStreakStat.textContent =
+statistics.longestStreak;
+
+guessDistribution.innerHTML = "";
+
+const distributionValues =
+Object.values(
+statistics.guessDistribution
+).map(
+function (value) {
+return Number(value) || 0;
+}
+);
+
+const highestCount =
+Math.max(
+1,
+...distributionValues
+);
+
+for (
+let guessNumber = 1;
+guessNumber <= 6;
+guessNumber += 1
+) {
+const count =
+Number(
+statistics.guessDistribution[
+guessNumber
+]
+) || 0;
+
+const row =
+document.createElement(
+"div"
+);
+
+row.className =
+"distribution-row";
+
+const label =
+document.createElement(
+"span"
+);
+
+label.className =
+"distribution-label";
+
+label.textContent =
+guessNumber;
+
+const track =
+document.createElement(
+"div"
+);
+
+track.className =
+"distribution-track";
+
+const bar =
+document.createElement(
+"div"
+);
+
+bar.className =
+"distribution-bar";
+
+if (count === 0) {
+bar.style.width = "0";
+} else {
+bar.style.width =
+Math.max(
+8,
+(
+count /
+highestCount
+) *
+100
+) +
+"%";
+}
+
+track.appendChild(bar);
+
+const countDisplay =
+document.createElement(
+"span"
+);
+
+countDisplay.className =
+"distribution-count";
+
+countDisplay.textContent =
+count;
+
+row.appendChild(label);
+
+row.appendChild(track);
+
+row.appendChild(
+countDisplay
+);
+
+guessDistribution.appendChild(
+row
+);
+}
+
+renderDailyStatisticsMessage();
+}
+
+function renderDailyStatisticsMessage() {
+    const dailyKey =
+        getDailyGameKey();
+
+    const dailyResult =
+        statistics.completedDailyGames[
+            dailyKey
+        ];
+
+    if (!dailyResult) {
+        dailyStatsMessage.textContent =
+            "Today's universal Daily Challenge has not been completed.";
+        return;
+    }
+
+    if (dailyResult.won) {
+        dailyStatsMessage.textContent =
+            "Today's Daily Challenge was solved in " +
+            dailyResult.guesses +
+            " guesses.";
+    } else {
+        dailyStatsMessage.textContent =
+            "Today's Daily Challenge was completed without a win.";
+    }
+}
+
+function resetStatistics() {
+const confirmed =
+window.confirm(
+"Reset all Muscledle statistics? This cannot be undone."
+);
+
+if (!confirmed) {
+return;
+}
+
+statistics =
+createDefaultStatistics();
+
+storeStatistics();
+
+renderStatistics();
+}
+
+/* PART 6D: DAILY SHARE WITH MUSCLE MOOD */
+const muscleMoods = {
+    win: [
+        "Fully Innervated",
+        "Concentric Confidence",
+        "Maximum Recruitment",
+        "Attached and Unbothered",
+        "Anatomically Locked In",
+        "Motor Function Intact",
+        "Origin Found, Insertion Secured",
+        "Brachial Plexus Approved",
+        "Contractile and Correct",
+        "Range of Motion: Victorious"
+    ],
+    loss: [
+        "Origin Unknown, Insertion Pending",
+        "Mildly Denervated",
+        "Anatomically Suspicious",
+        "Needs One More Practical",
+        "Compensating With Accessory Muscles",
+        "Motor Unit Recruitment In Progress",
+        "Temporarily Fatigued",
+        "Deep Compartment Energy"
+    ]
+};
+
+function formatShareDate() {
+    return new Date().toLocaleDateString(
+        undefined,
+        {
+            year: "numeric",
+            month: "long",
+            day: "numeric"
+        }
+    );
+}
+
+function chooseMuscleMood(won) {
+    const moods = won
+        ? muscleMoods.win
+        : muscleMoods.loss;
+
+    return moods[
+        Math.floor(Math.random() * moods.length)
+    ];
+}
+
+function prepareDailyShare(won, guessNumber) {
+    if (currentGameMode !== "daily") {
+        completedShareText = "";
+        shareButton.disabled = true;
+        shareButton.classList.remove("share-ready");
+        return;
+    }
+
+    currentMuscleMood = chooseMuscleMood(won);
+
+    const score = won
+        ? guessNumber + "/6"
+        : "X/6";
+
+    completedShareText =
+        "💪 Muscledle Daily " + score + "\n" +
+        formatShareDate() + "\n\n" +
+        "Muscle Mood: " + currentMuscleMood + "\n" +
+        "Score: " + score + "\n\n" +
+        "#Muscledle";
+
+    shareButton.disabled = false;
+    shareButton.classList.add("share-ready");
+}
+
+function fallbackCopyText(text) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.setAttribute("readonly", "");
+    textArea.style.position = "fixed";
+    textArea.style.opacity = "0";
+    document.body.appendChild(textArea);
+    textArea.select();
+
+    let copied = false;
+    try {
+        copied = document.execCommand("copy");
+    } catch (error) {
+        copied = false;
+    }
+
+    document.body.removeChild(textArea);
+    return copied;
+}
+
+async function shareResults() {
+    if (!completedShareText) {
+        shareFeedback.textContent =
+            "Complete today's Daily Challenge before sharing.";
+        return;
+    }
+
+    try {
+        if (
+            navigator.clipboard &&
+            typeof navigator.clipboard.writeText === "function"
+        ) {
+            await navigator.clipboard.writeText(completedShareText);
+            shareFeedback.textContent =
+                "Daily result copied to clipboard.";
+        } else if (fallbackCopyText(completedShareText)) {
+            shareFeedback.textContent =
+                "Daily result copied to clipboard.";
+        } else {
+            window.prompt(
+                "Copy your Muscledle result:",
+                completedShareText
+            );
+            shareFeedback.textContent =
+                "Share text opened for manual copying.";
+        }
+    } catch (error) {
+        if (fallbackCopyText(completedShareText)) {
+            shareFeedback.textContent =
+                "Daily result copied to clipboard.";
+        } else {
+            window.prompt(
+                "Copy your Muscledle result:",
+                completedShareText
+            );
+            shareFeedback.textContent =
+                "Share text opened for manual copying.";
+        }
+    }
+}
+
+function submitGuess() {
+if (gameOver) {
+return;
+}
+
+const typedName =
+normalize(
+input.value
+);
+
+const guess =
+muscles.find(
+function (muscle) {
+return (
+normalize(
+muscle.name
+) ===
+typedName
+);
+}
+);
+
+if (!guess) {
+message.textContent =
+"Please select a valid muscle from the suggestion list.";
+
+input.focus();
+
+return;
+}
+
+if (
+guessedMuscles.has(
+guess.name
+)
+) {
+message.textContent =
+"You already guessed that muscle.";
+
+input.value = "";
+
+input.focus();
+
+return;
+}
+
+guessedMuscles.add(
+guess.name
+);
+
+guessesRemaining =
+guessesRemaining - 1;
+
+updateCounter();
+
+message.textContent = "";
+
+const row =
+document.createElement(
+"tr"
+);
+
+const nameResult =
+guess.name ===
+target.name
+? {
+color: "green",
+hint: "Correct muscle"
+}
+: {
+color: "gray",
+hint: "Not the target"
+};
+
+const regionResult =
+compareRegions(
+guess.region,
+target.region
+);
+
+const compartmentResult =
+compareCompartments(
+guess.compartment,
+target.compartment
+);
+
+const actionResult =
+compareActions(
+guess.actions,
+target.actions
+);
+
+const nerveResult =
+compareNerves(
+guess,
+target
+);
+
+const rootResult =
+compareRoots(
+guess.roots,
+target.roots
+);
+
+const originResult =
+compareAttachments(
+guess.origin,
+target.origin,
+"origin"
+);
+
+const insertionResult =
+compareAttachments(
+guess.insertion,
+target.insertion,
+"insertion"
+);
+
+const compassResult =
+chooseCompassHint(
+    guess,
+    target
+);
+
+addAdvancedCell(
+row,
+guess.name,
+nameResult
+);
+
+addAdvancedCell(
+row,
+guess.region,
+regionResult
+);
+
+addAdvancedCell(
+row,
+guess.compartment,
+compartmentResult
+);
+
+addAdvancedCell(
+row,
+guess.actions.join(", "),
+actionResult
+);
+
+addAdvancedCell(
+row,
+guess.innervation,
+nerveResult
+);
+
+addAdvancedCell(
+row,
+guess.roots.join(", "),
+rootResult
+);
+
+addAdvancedCell(
+row,
+guess.origin.join(", "),
+originResult
+);
+
+addAdvancedCell(
+row,
+guess.insertion.join(", "),
+insertionResult
+);
+
+addCompassCell(
+    row,
+    compassResult
+);
+
+results.appendChild(
+row
+);
+
+if (
+guess.name ===
+target.name
+) {
+gameOver = true;
+
+markCorrectGuessRow(
+row
+);
+
+answerDisplayed = true;
+
+
+studyButton.disabled = false;
+
+message.textContent =
+"Correct! The answer was " +
+target.name +
+".";
+
+disableGame();
+
+closeSuggestions();
+
+prepareDailyShare(
+true,
+6 - guessesRemaining
+);
+
+saveCompletedGame(
+true,
+6 - guessesRemaining
+);
+
+return;
+}
+
+
+
+if (
+guessesRemaining === 0
+) {
+gameOver = true;
+
+revealCorrectAnswer();
+
+
+studyButton.disabled = false;
+
+message.textContent =
+"Out of guesses. The answer was " +
+target.name +
+".";
+
+disableGame();
+
+closeSuggestions();
+
+prepareDailyShare(
+false,
+6
+);
+
+saveCompletedGame(
+false,
+6
+);
+
+return;
+}
+
+input.value = "";
+
+closeSuggestions();
+
+input.focus();
+}
+
+/*
+==========================================
+END OF PART 3 MATCHING ENGINE
+==========================================
+*/
+function usesMobilePicker() {
+  return window.matchMedia(
+    "(max-width: 900px), (pointer: coarse)"
+  ).matches;
+}
+
+function positionMobileSuggestions() {
+  /* Mobile uses a full-screen picker instead of an anchored dropdown. */
+  if (usesMobilePicker()) {
+    suggestions.classList.remove("mobile-suggestions");
+    suggestions.style.top = "";
+    suggestions.style.left = "";
+    suggestions.style.width = "";
+  }
+}
+
+function chooseSuggestion(muscleName) {
+  input.value = muscleName;
+  closeSuggestions();
+  message.textContent = "Selected: " + muscleName + ". Tap Guess to submit.";
+
+  if (!usesMobilePicker()) {
+    input.focus();
+  } else {
+    input.blur();
+    guessButton.focus();
+    window.setTimeout(function () {
+      guessButton.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+    }, 80);
+  }
+}
+
+function showSuggestions() {
+  const searchText = normalize(input.value);
+  suggestions.innerHTML = "";
+  mobilePickerList.innerHTML = "";
+
+  if (searchText === "" || gameOver) {
+    closeSuggestions();
+    return;
+  }
+
+  const matches = muscles
+    .filter(function (muscle) {
+      return normalize(muscle.name).includes(searchText);
+    })
+    .sort(function (first, second) {
+      const firstName = normalize(first.name);
+      const secondName = normalize(second.name);
+      const firstStarts = firstName.startsWith(searchText);
+      const secondStarts = secondName.startsWith(searchText);
+      if (firstStarts !== secondStarts) {
+        return firstStarts ? -1 : 1;
+      }
+      return first.name.localeCompare(second.name);
+    })
+    .slice(0, 20);
+
+  if (usesMobilePicker()) {
+    mobilePickerQuery.textContent = matches.length + ' matches for “' + input.value.trim() + '”';
+
+    if (matches.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "mobile-picker-empty";
+      empty.textContent = "No matching muscle. Continue typing or close this list.";
+      mobilePickerList.appendChild(empty);
+    } else {
+      matches.forEach(function (muscle) {
+        const option = document.createElement("button");
+        option.type = "button";
+        option.className = "mobile-picker-option";
+        option.textContent = muscle.name;
+        option.setAttribute("role", "option");
+        option.setAttribute("data-muscle-name", muscle.name);
+
+        option.addEventListener("click", function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+          chooseSuggestion(muscle.name);
+        });
+
+        mobilePickerList.appendChild(option);
+      });
+    }
+
+    mobilePicker.classList.remove("hidden");
+    document.body.classList.add("mobile-picker-open");
+    input.setAttribute("aria-expanded", "true");
+    return;
+  }
+
+  matches.slice(0, 12).forEach(function (muscle, index) {
+    const option = document.createElement("button");
+    option.type = "button";
+    option.className = "suggestion";
+    option.textContent = muscle.name;
+    option.setAttribute("role", "option");
+    option.setAttribute("data-muscle-name", muscle.name);
+    option.id = "muscle-option-" + index;
+
+    option.addEventListener("pointerdown", function (event) {
+      event.preventDefault();
+      chooseSuggestion(muscle.name);
+    });
+
+    option.addEventListener("click", function (event) {
+      event.preventDefault();
+      chooseSuggestion(muscle.name);
+    });
+
+    suggestions.appendChild(option);
+  });
+
+  input.setAttribute("aria-expanded", matches.length > 0 ? "true" : "false");
+}
+
+input.addEventListener(
+"input",
+showSuggestions
+);
+
+input.addEventListener(
+"focus",
+function () {
+    if (input.value.trim() !== "") {
+        showSuggestions();
+    }
+}
+);
+
+window.addEventListener("resize", positionMobileSuggestions);
+window.addEventListener("orientationchange", function () {
+    window.setTimeout(positionMobileSuggestions, 100);
+});
+
+if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", positionMobileSuggestions);
+    window.visualViewport.addEventListener("scroll", positionMobileSuggestions);
+}
+
+input.addEventListener(
+"keydown",
+function (event) {
+    const options = Array.from(
+        suggestions.querySelectorAll(".suggestion")
+    );
+    const activeIndex = options.findIndex(function (option) {
+        return option.classList.contains("active-suggestion");
+    });
+
+    if (event.key === "ArrowDown" && options.length > 0) {
+        event.preventDefault();
+        const nextIndex = activeIndex < options.length - 1 ? activeIndex + 1 : 0;
+        options.forEach(function (option) {
+            option.classList.remove("active-suggestion");
+        });
+        options[nextIndex].classList.add("active-suggestion");
+        options[nextIndex].scrollIntoView({ block: "nearest" });
+        return;
+    }
+
+    if (event.key === "ArrowUp" && options.length > 0) {
+        event.preventDefault();
+        const nextIndex = activeIndex > 0 ? activeIndex - 1 : options.length - 1;
+        options.forEach(function (option) {
+            option.classList.remove("active-suggestion");
+        });
+        options[nextIndex].classList.add("active-suggestion");
+        options[nextIndex].scrollIntoView({ block: "nearest" });
+        return;
+    }
+
+    if (event.key === "Enter") {
+        event.preventDefault();
+        if (activeIndex >= 0) {
+            chooseSuggestion(options[activeIndex].getAttribute("data-muscle-name"));
+        } else if (options.length === 1) {
+            chooseSuggestion(options[0].getAttribute("data-muscle-name"));
+        } else {
+            submitGuess();
+        }
+    }
+
+    if (event.key === "Escape") {
+        closeSuggestions();
+    }
+}
+);
+
+closeMobilePickerButton.addEventListener(
+"click",
+function () {
+  closeSuggestions();
+  input.focus();
+}
+);
+
+mobilePicker.addEventListener(
+"click",
+function (event) {
+  if (event.target === mobilePicker) {
+    closeSuggestions();
+    input.focus();
+  }
+}
+);
+
+guessButton.addEventListener(
+"click",
+submitGuess
+);
+
+newGameButton.addEventListener(
+"click",
+newGame
+);
+
+
+
+gameModeSelect.addEventListener(
+"change",
+function () {
+updateModeControls();
+
+newGame();
+
+renderStatistics();
+}
+);
+
+regionFilterSelect.addEventListener(
+"change",
+function () {
+newGame();
+
+renderStatistics();
+}
+);
+
+
+difficultyFilterSelect.addEventListener(
+"change",
+function () {
+try {
+localStorage.setItem(
+"muscledleDifficulty",
+difficultyFilterSelect.value
+);
+} catch (error) {
+console.error(
+"Difficulty could not be saved:",
+error
+);
+}
+
+newGame();
+
+renderStatistics();
+}
+);
+
+
+studyButton.addEventListener(
+"click",
+openStudyCard
+);
+
+closeStudyButton.addEventListener(
+"click",
+closeStudyCard
+);
+
+shareButton.addEventListener(
+"click",
+shareResults
+);
+
+statsButton.addEventListener(
+"click",
+function () {
+renderStatistics();
+
+
+
+studyPanel.classList.add(
+"hidden"
+);
+
+statsPanel.classList.remove(
+"hidden"
+);
+}
+);
+
+closeStatsButton.addEventListener(
+"click",
+function () {
+statsPanel.classList.add(
+"hidden"
+);
+}
+);
+
+resetStatsButton.addEventListener(
+"click",
+resetStatistics
+);
+
+document.addEventListener(
+"pointerdown",
+function (event) {
+  const clickedInsideSearch =
+    event.target.closest(
+      ".search-container"
+    );
+
+  const clickedInsideMobilePicker =
+    event.target.closest(
+      "#mobilePicker"
+    );
+
+  if (
+    !clickedInsideSearch &&
+    !clickedInsideMobilePicker
+  ) {
+    closeSuggestions();
+  }
+}
+);
+
+
+try {
+const savedDifficulty =
+localStorage.getItem(
+"muscledleDifficulty"
+);
+
+if (
+savedDifficulty &&
+Object.prototype
+.hasOwnProperty.call(
+difficultyRanks,
+savedDifficulty
+)
+) {
+difficultyFilterSelect.value =
+savedDifficulty;
+}
+} catch (error) {
+console.error(
+"Saved difficulty could not be loaded:",
+error
+);
+}
+
+runMuscleDataAudit();
+
+
+renderStatistics();
+
+newGame();
+</script>
+
+</body>
+
+</html>
