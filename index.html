@@ -9,7 +9,7 @@ name="viewport"
 content="width=device-width, initial-scale=1.0, viewport-fit=cover"
 >
 
-<title>Muscledle Mobile Fully Playable</title>
+<title>Muscledle 159 Muscle Release</title>
 
 <style>
 * {
@@ -3283,12 +3283,154 @@ addMuscle(
 
 
 /*
+=============================
+ADDITIONAL VERIFIED MUSCLES
+=============================
+*/
+addMuscle(
+"Quadratus Lumborum",
+"Back",
+"Posterior Abdominal Wall",
+[
+"Lateral Flexion",
+"Spinal Extension",
+"Twelfth Rib Fixation"
+],
+"Anterior Rami of T12-L4 Spinal Nerves",
+"Thoracolumbar Spinal Nerves",
+["T12", "L1", "L2", "L3", "L4"],
+[
+"Iliac Crest",
+"Iliolumbar Ligament"
+],
+[
+"Inferior Border of Twelfth Rib",
+"Transverse Processes L1-L4"
+]
+);
+
+addMuscle(
+"Pectineus",
+"Lower Limb",
+"Medial Thigh",
+[
+"Hip Flexion",
+"Hip Adduction"
+],
+"Femoral Nerve with Variable Obturator Contribution",
+"Lumbar Plexus",
+["L2", "L3"],
+[
+"Pectineal Line of Pubis"
+],
+[
+"Pectineal Line of Femur"
+]
+);
+
+addMuscle(
+"First Lumbrical of Foot",
+"Lower Limb",
+"Plantar Foot",
+[
+"MTP Flexion",
+"IP Extension"
+],
+"Medial Plantar Nerve",
+"Sacral Plexus",
+["S2", "S3"],
+[
+"Medial Side of First Flexor Digitorum Longus Tendon"
+],
+[
+"Medial Base of Proximal Phalanx and Extensor Expansion of Second Toe"
+]
+);
+
+addMuscle(
+"Lumbricals 2-4 of Foot",
+"Lower Limb",
+"Plantar Foot",
+[
+"MTP Flexion",
+"IP Extension"
+],
+"Lateral Plantar Nerve",
+"Sacral Plexus",
+["S2", "S3"],
+[
+"Adjacent Sides of Flexor Digitorum Longus Tendons"
+],
+[
+"Medial Bases of Proximal Phalanges and Extensor Expansions of Toes 3-5"
+]
+);
+
+/*
 ==========================================
 PART 5: BACKWARD-COMPATIBLE STUDY DATA
 ==========================================
 */
 
 const part5StudyOverrides = {
+"Quadratus Lumborum": {
+bloodSupply: [
+"Lumbar Arteries",
+"Iliolumbar Artery",
+"Subcostal Artery"
+],
+clinical:
+"Quadratus Lumborum can contribute to mechanical low-back pain and fixes the twelfth rib during inspiration.",
+studyNote:
+"It extends from the iliac crest and iliolumbar ligament to the twelfth rib and L1-L4 transverse processes. Unilateral contraction laterally flexes the trunk.",
+difficulty:
+"Standard",
+reviewed:
+true
+},
+"Pectineus": {
+bloodSupply: [
+"Medial Circumflex Femoral Artery",
+"Obturator Artery",
+"Femoral Artery"
+],
+clinical:
+"Pectineus may receive variable obturator or accessory obturator innervation in addition to its usual Femoral Nerve supply.",
+studyNote:
+"Pectineus is a transitional anterior-medial thigh muscle that flexes and adducts the hip.",
+difficulty:
+"Standard",
+reviewed:
+true
+},
+"First Lumbrical of Foot": {
+bloodSupply: [
+"Medial Plantar Artery",
+"Plantar Metatarsal Arteries"
+],
+clinical:
+"The first foot lumbrical is distinguished from the lateral three by its Medial Plantar Nerve supply.",
+studyNote:
+"It arises from the medial side of the first Flexor Digitorum Longus tendon and acts on the second toe.",
+difficulty:
+"Standard",
+reviewed:
+true
+},
+"Lumbricals 2-4 of Foot": {
+bloodSupply: [
+"Lateral Plantar Artery",
+"Plantar Metatarsal Arteries"
+],
+clinical:
+"The lateral three foot lumbricals are supplied by the Lateral Plantar Nerve and assist coordinated toe position during gait.",
+studyNote:
+"These muscles arise from adjacent sides of Flexor Digitorum Longus tendons and act on toes three through five.",
+difficulty:
+"Standard",
+reviewed:
+true
+},
 "Trapezius": {
 bloodSupply: [
 "Transverse Cervical Artery"
@@ -4357,19 +4499,20 @@ const segmentProfiles = {
     "Gluteal Region": ["Lower Limb","Hip",1], "Deep Gluteal Region": ["Lower Limb","Hip",1], "Anterior Hip": ["Lower Limb","Hip",1],
     "Anterior Thigh": ["Lower Limb","Thigh",2], "Medial Thigh": ["Lower Limb","Thigh",2], "Posterior Thigh": ["Lower Limb","Thigh",2],
     "Anterior Leg": ["Lower Limb","Leg",3], "Lateral Leg": ["Lower Limb","Leg",3], "Superficial Posterior Leg": ["Lower Limb","Leg",3], "Deep Posterior Leg": ["Lower Limb","Leg",3],
-    "Dorsal Foot": ["Lower Limb","Foot",4], "Plantar Foot": ["Lower Limb","Foot",4]
+    "Dorsal Foot": ["Lower Limb","Foot",4], "Plantar Foot": ["Lower Limb","Foot",4],
+    "Posterior Abdominal Wall": ["Axial","Trunk",2]
 };
 const surfaceProfiles = {
     "Anterior Shoulder":"Anterior", "Posterior Shoulder":"Posterior", "Anterior Arm":"Anterior", "Posterior Arm":"Posterior",
     "Anterior Forearm":"Anterior", "Posterior Forearm":"Posterior", "Anterior Hip":"Anterior", "Anterior Thigh":"Anterior",
     "Posterior Thigh":"Posterior", "Anterior Leg":"Anterior", "Superficial Posterior Leg":"Posterior", "Deep Posterior Leg":"Posterior",
-    "Dorsal Foot":"Dorsal", "Plantar Foot":"Plantar"
+    "Dorsal Foot":"Dorsal", "Plantar Foot":"Plantar", "Posterior Abdominal Wall":"Posterior"
 };
 const depthProfiles = {
     "Rotator Cuff":2,"Scapular Region":1,"Anterior Arm":1,"Posterior Arm":1,"Anterior Forearm":1,"Posterior Forearm":1,
     "Thenar Hand":1,"Hypothenar Hand":1,"Central Hand":2,"Deep Hand":3,"Gluteal Region":1,"Deep Gluteal Region":3,
     "Anterior Thigh":1,"Medial Thigh":1,"Posterior Thigh":1,"Anterior Leg":1,"Lateral Leg":1,"Superficial Posterior Leg":1,"Deep Posterior Leg":3,
-    "Dorsal Foot":1,"Plantar Foot":2,"Erector Spinae":1,"Transversospinalis":3
+    "Dorsal Foot":1,"Plantar Foot":2,"Erector Spinae":1,"Transversospinalis":3,"Posterior Abdominal Wall":3
 };
 const medialLateralProfiles = {"Medial Thigh":1,"Lateral Leg":3,"Thenar Hand":3,"Hypothenar Hand":1};
 const jointMap = {
@@ -5127,6 +5270,7 @@ brachialCollateral: [
 
 lumbar: [
 "Femoral Nerve",
+"Femoral Nerve with Variable Obturator Contribution",
 "Obturator Nerve",
 "Anterior Rami of Lumbar Nerves"
 ],
@@ -5142,6 +5286,7 @@ sacral: [
 "Sacral Plexus Branches",
 "Pudendal and Sacral Nerves",
 "Medial or Lateral Plantar Nerve",
+"Medial Plantar Nerve",
 "Lateral Plantar Nerve",
 "Nerve to Piriformis",
 "Nerve to Obturator Internus",
@@ -5174,7 +5319,8 @@ posteriorRami: [
 
 thoracic: [
 "Thoracoabdominal Nerves",
-"Intercostal Nerves"
+"Intercostal Nerves",
+"Anterior Rami of T12-L4 Spinal Nerves"
 ]
 };
 
@@ -5408,7 +5554,8 @@ thoracic: [
 
 back: [
 "Erector Spinae",
-"Transversospinalis"
+"Transversospinalis",
+"Posterior Abdominal Wall"
 ],
 
 neck: [
@@ -5801,7 +5948,7 @@ return hash >>> 0;
 }
 
 const dailyReleaseId =
-"muscledle-verified-155-release-3";
+"muscledle-verified-159-release-4";
 
 function getDailyTargetPool() {
     return muscles
